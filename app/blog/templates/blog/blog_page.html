@@ -1,49 +1,77 @@
 {% extends "base.html" %}
 
-{% load wagtailcore_tags wagtailimages_tags %}
+{% load static wagtailcore_tags wagtailimages_tags wagtailadmin_tags %}
 
 {% block body_class %}template-blogpage{% endblock %}
 
 {% block content %}
-    <h1>{{ page.title }}</h1>
-    <p class="meta">{{ page.date }}</p>
 
-    {% with authors=page.authors.all %}
-        {% if authors %}
-            <h3>Posted by:</h3>
-            <ul>
-                {% for author in authors %}
-                    <li style="display: inline">
-                        {% image author.author_image fill-40x60 style="vertical-align: middle" %}
+    <div class="grid">
+        <article>
+            <hgroup>
+                <h1>{{ page.title }}</h1>
+                <p class="meta">{{ page.date }}</p>
+            </hgroup>
+            <p><a href="{{ page.get_parent.url }}">Return to blog</a></p>
+        </article>
+
+        <article>
+            {% with authors=page.authors.all %}
+                {% if authors %}
+                <p>Posted by:</p>
+                    {% for author in authors %}
+                    <small>
+                        {% image author.author_image fill-40x40 as author_image %}
+                        {% if author_image %}
+                        <img src="{{ author_image.url }}" alt="{{ author.name }}">
+                        {% else %}
+                        <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 16 16"><title>user</title><g fill="#212121"><circle cx="8" cy="3.5" r="3" fill="none" stroke="#212121" stroke-linecap="round" stroke-linejoin="round"></circle><path d="M8,9c-3.59,0-6.5,2.91-6.5,6.5H14.5c0-3.59-2.91-6.5-6.5-6.5Z" fill="none" stroke="#212121" stroke-linecap="round" stroke-linejoin="round"></path></g></svg>
+                        {% endif %}
                         {{ author.name }}
-                    </li>
-                {% endfor %}
-            </ul>
-        {% endif %}
-    {% endwith %}
+                    </small>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+            <hr>
+            {% with tags=page.tags.all %}
+                {% if tags %}
+                    <small>Tags:</small>
+                    {% for tag in tags %}
+                        <a href="{% slugurl 'tags' %}?tag={{ tag }}">{{ tag }}</a>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+        </article>
 
-    <div class="intro">{{ page.intro }}</div>
+    </div>
 
-    {{ page.body|richtext }}
+    <article>
+        <div class="grid">
+            <hgroup>
+                <p>{{ page.intro }}</p>
+                {{ page.body|richtext }}
+            </hgroup>
 
-    {% for item in page.gallery_images.all %}
-        <div style="float: inline-start; margin: 10px">
-            {% image item.image fill-320x240 %}
-            <p>{{ item.caption }}</p>
         </div>
-    {% endfor %}
 
-    <p><a href="{{ page.get_parent.url }}">Return to blog</a></p>
-
-    {% with tags=page.tags.all %}
-        {% if tags %}
-            <div class="tags">
-                <h3>Tags</h3>
-                {% for tag in tags %}
-                    <a href="{% slugurl 'tags' %}?tag={{ tag }}"><button type="button">{{ tag }}</button></a>
-                {% endfor %}
-            </div>
+        {% for item in page.gallery_images.all %}
+        {% if forloop.first or forloop.counter0|divisibleby:3 %}
+        {% comment %} Start a new row {% endcomment %}
+        <div class="grid">
         {% endif %}
-    {% endwith %}
+            <figure>
+                {% image item.image fill-600x400 %}
+                <figcaption>
+                    {{ item.caption }}
+                </figcaption>
+            </figure>
+        {% if forloop.last or forloop.counter|divisibleby:3 %}
+        </div>
+        {% endif %}
+        {% endfor %}
+
+
+    </article>
+
 
 {% endblock %}
