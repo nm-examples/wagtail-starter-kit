@@ -34,21 +34,7 @@
     <body class="{% block body_class %}{% endblock %}">
         {% wagtailuserbar %}
 
-        {% blog_index_page as blog %}
-        <header class="container">
-            <nav>
-                <ul>
-                    <li>
-                        <a href="/"><h1>Wagtail Blog Tutorial</h1></a>
-                    </li>
-                </ul>
-                <li>
-                    <ul>
-                        <a href="{% if blog %}{{ blog.url }}{% else %}#{% endif %}" role="button">View Blog{% if not blog %}(Create a blog index page){% endif %}</a>
-                    </li>
-                </ul>
-            </nav>
-        </header>
+        {% include "includes/header.html" %}
 
         <main class="container">
             {% block content %}{% endblock %}
