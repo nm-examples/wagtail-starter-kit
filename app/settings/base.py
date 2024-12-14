@@ -25,11 +25,13 @@ DEBUG = os.getenv("DEBUG", "False").lower() == "true"
 # Application definition
 
 INSTALLED_APPS = [
+    "app.base",
+    "app.blog",
     "app.home",
     "app.search",
-    "app.blog",
     "wagtail.contrib.forms",
     "wagtail.contrib.redirects",
+    "wagtail.contrib.settings",
     "wagtail.contrib.table_block",
     "wagtail.embeds",
     "wagtail.sites",
@@ -76,6 +78,7 @@ TEMPLATES = [
                 "django.template.context_processors.request",
                 "django.contrib.auth.context_processors.auth",
                 "django.contrib.messages.context_processors.messages",
+                "wagtail.contrib.settings.context_processors.settings",
             ],
         },
     },
