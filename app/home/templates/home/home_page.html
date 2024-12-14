@@ -6,6 +6,10 @@
 
 {% block content %}
     <article>
+        {% if page.body %}
         {{ page.body|richtext }}
+        {% else %}
+        <p>No content has been added to this page body yet.</p>
+        {% endif %}
     </article>
 {% endblock %}
