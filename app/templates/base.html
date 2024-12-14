@@ -54,9 +54,7 @@
             {% block content %}{% endblock %}
         </main>
 
-        <footer class="container">
-            <p>Working example of the <a href="https://docs.wagtail.org/en/v6.2.2/getting_started/tutorial.html">Wagtail Getting Started Tutorial</a></p>
-        </footer>
+        {% include "includes/footer.html" %}
 
         {# Global javascript #}
         <script type="text/javascript" src="{% static 'js/app.js' %}"></script>
