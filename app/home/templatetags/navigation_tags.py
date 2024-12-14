@@ -6,5 +6,9 @@ register = template.Library()
 
 
 @register.simple_tag
-def get_blog_index_url():
-    return BlogIndexPage.objects.first().url
+def blog_index_page():
+    """
+    Get the blog index page if it exists.
+    """
+
+    return BlogIndexPage.objects.live().first() or None
