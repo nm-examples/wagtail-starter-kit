@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% load static wagtailcore_tags wagtailimages_tags wagtailadmin_tags %}
+{% load static wagtailcore_tags wagtailimages_tags wagtailadmin_tags blog_tags %}
 
 {% block body_class %}template-blogpage{% endblock %}
 
@@ -33,12 +33,17 @@
                 {% endif %}
             {% endwith %}
             <hr>
+            {% blog_tags_page as tags_page %}
             {% with tags=page.tags.all %}
                 {% if tags %}
                     <small>Tags:</small>
+                    {% if tags_page %}
                     {% for tag in tags %}
-                        <a href="{% slugurl 'tags' %}?tag={{ tag }}">{{ tag }}</a>
+                        <a href="{{ tags_page.url }}?tag={{ tag }}">{{ tag }}</a>
                     {% endfor %}
+                    {% else %}
+                    <p>Create a blog tags page</p>
+                    {% endif %}
                 {% endif %}
             {% endwith %}
         </article>
