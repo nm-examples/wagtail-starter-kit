@@ -4,16 +4,23 @@
 {% block body_class %}template-homepage{% endblock %}
 
 {% block content %}
-    <div>
-        <h1>{{ page.title }}</h1>
-        {% image page.image fill-480x320 %}
-        <p>{{ page.hero_text }}</p>
-        {% if page.hero_cta_link %}
-            <a href="{% pageurl page.hero_cta_link %}">
-                {% firstof page.hero_cta page.hero_cta_link.title %}
-            </a>
-        {% endif %}
-    </div>
 
-  {{ page.body|richtext }}
+{% image page.image fill-1920x1080 as hero_image %}
+
+<article style="background-image: url('{{ hero_image.url }}'); background-size: cover; background-position: center; min-height: 420px;">
+    <p>
+        <mark>{{ page.hero_text }}</mark>
+    </p>
+    {% if page.hero_cta_link %}
+    <a href="{% pageurl page.hero_cta_link %}" role="button">
+        {% firstof page.hero_cta page.hero_cta_link.title %}
+    </a>
+    {% endif %}
+</article>
+
+<article>
+    <h1>{{ page.title }}</h1>
+    {{ page.body|richtext }}
+</article>
+
 {% endblock content %}
