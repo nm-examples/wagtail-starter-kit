@@ -32,7 +32,9 @@
                 {% endwith %}
                     <div>
                         <p>{{ post.intro }}</p>
+                        {% comment %} Don't display the body text here
                         {{ post.body|richtext }}
+                        {% endcomment %}
                     </div>
                 </div>
                 {% endwith %}
