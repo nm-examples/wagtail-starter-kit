@@ -6,41 +6,49 @@
 {% block title %}Search{% endblock %}
 
 {% block content %}
-<h1>Search</h1>
 
-<form action="{% url 'search' %}" method="get">
-    <input type="text" name="query"{% if search_query %} value="{{ search_query }}"{% endif %}>
-    <input type="submit" value="Search" class="button">
-</form>
+<article>
+    <h1>Search</h1>
+    <form action="{% url 'search' %}" method="get">
+        <fieldset role="group">
+            <input type="text" name="query"{% if search_query %} value="{{ search_query }}"{% endif %}>
+            <input type="submit" value="Search" class="button">
+        </fieldset>
+    </form>
 
-{% if search_results %}
+    {% if search_results %}
 
-<p>You searched{% if search_query %} for “{{ search_query }}”{% endif %}, {{ search_results.paginator.count }} result{{ search_results.paginator.count|pluralize }} found.</p>
+    <p>You searched{% if search_query %} for “{{ search_query }}”{% endif %}, {{ search_results.paginator.count }} result{{ search_results.paginator.count|pluralize }} found.</p>
 
-<ol>
-    {% for result in search_results %}
-    <li>
-        <h4><a href="{% pageurl result %}">{{ result }}</a></h4>
-        {% if result.search_description %}
-        {{ result.search_description }}
-        {% endif %}
-    </li>
-    {% endfor %}
-</ol>
+    <ol>
+        {% for result in search_results %}
+        <li>
+            <a href="{% pageurl result %}">{{ result }}</a>
+            {% if result.search_description %}
+            {{ result.search_description }}
+            {% endif %}
+        </li>
+        {% endfor %}
+    </ol>
 
-{% if search_results.paginator.num_pages > 1 %}
-    <p>Page {{ search_results.number }} of {{ search_results.paginator.num_pages }}, showing {{ search_results|length }} result{{ search_results|pluralize }} out of {{ search_results.paginator.count }}</p>
-{% endif %}
+    {% if search_results.paginator.num_pages > 1 %}
+        <p>Page {{ search_results.number }} of {{ search_results.paginator.num_pages }}, showing {{ search_results|length }} result{{ search_results|pluralize }} out of {{ search_results.paginator.count }}</p>
+    {% endif %}
 
-{% if search_results.has_previous %}
-<a href="{% url 'search' %}?query={{ search_query|urlencode }}&amp;page={{ search_results.previous_page_number }}">Previous</a>
-{% endif %}
+    {% if search_results.has_previous %}
+    <a href="{% url 'search' %}?query={{ search_query|urlencode }}&amp;page={{ search_results.previous_page_number }}" role="button">Previous</a>
+    {% endif %}
 
-{% if search_results.has_next %}
-<a href="{% url 'search' %}?query={{ search_query|urlencode }}&amp;page={{ search_results.next_page_number }}">Next</a>
-{% endif %}
+    {% if search_results.has_next %}
+    <a href="{% url 'search' %}?query={{ search_query|urlencode }}&amp;page={{ search_results.next_page_number }}" role="button">Next</a>
+    {% endif %}
 
-{% elif search_query %}
-No results found
-{% endif %}
-{% endblock %}
+    {% elif search_query %}
+
+    No results found
+
+    {% endif %}
+
+    {% endblock %}
+
+</article>
