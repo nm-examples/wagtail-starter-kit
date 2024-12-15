@@ -39,7 +39,9 @@
         {% include "includes/header.html" %}
 
         <main id="main">
-            {% block content %}{% endblock %}
+            <div class="container-fluid">
+                {% block content %}{% endblock %}
+            </div>
         </main>
 
         {% include "includes/footer.html" %}
