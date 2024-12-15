@@ -1,13 +1,82 @@
-@use '../../node_modules/@picocss/pico/scss/pico.scss'  with (
-    $theme-color: "pumpkin",
-  );
+// @use '../../node_modules/@picocss/pico/scss/pico.scss'  with (
+//     $theme-color: "pumpkin",
+//   );
 
-// The below line are optional,
-// you can use it if you want to use the color utility classes
-// otherwise they can be removed to save some bytes
-@use '../../node_modules/@picocss/pico/scss/colors' as *;
-@use "../../node_modules/@picocss/pico/scss/colors/utilities";
+// // The below line are optional,
+// // you can use it if you want to use the color utility classes
+// // otherwise they can be removed to save some bytes
+// @use '../../node_modules/@picocss/pico/scss/colors' as *;
+// @use "../../node_modules/@picocss/pico/scss/colors/utilities";
 
 
-// Your custom styles goes here
-@use 'components/example';
+// // Your custom styles goes here
+// @use 'components/example';
+
+/**
+* Temproary styles for the tutorial
+*/
+*,
+::before,
+::after {
+  box-sizing: border-box;
+}
+
+html {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, Roboto, "Helvetica Neue", Arial, sans-serif, Apple Color Emoji, "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+}
+
+body {
+  min-height: 100vh;
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 10px;
+  display: grid;
+  gap: 3vw;
+  grid-template-rows: min-content 1fr min-content;
+}
+
+a {
+  color: currentColor;
+}
+
+footer {
+  border-top: 2px dotted;
+  text-align: center;
+}
+
+header {
+  border-bottom: 2px dotted;
+}
+
+.template-homepage main {
+  text-align: center;
+}
+
+// Skip link styles
+.skip-link {
+  position: absolute;
+  top: -30px;
+}
+
+.skip-link:focus-visible {
+  top: 5px;
+}
+
+// Page form styles
+.page-form label {
+  display: block;
+  margin-top: 10px;
+  margin-bottom: 5px;
+}
+
+.page-form :is(textarea, input, select) {
+  width: 100%;
+  max-width: 500px;
+  min-height: 40px;
+  margin-top: 5px;
+  margin-bottom: 10px;
+}
+
+.page-form .helptext {
+  font-style: italic;
+}
