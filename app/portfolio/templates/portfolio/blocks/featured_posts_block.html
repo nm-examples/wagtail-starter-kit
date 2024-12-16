@@ -1,5 +1,5 @@
 {% load wagtailcore_tags %}
-<div>
+<article>
     <h2>{{ self.heading }}</h2>
     {% if self.text %}
         <p>{{ self.text|richtext }}</p>
@@ -13,4 +13,4 @@
             </div>
         {% endfor %}
     </div>
-</div>
+</article>
