@@ -44,4 +44,5 @@ class BaseStreamBlock(StreamBlock):
     embed_block = EmbedBlock(
         help_text="Insert a URL to embed. For example, https://www.youtube.com/watch?v=SGJFWirQ3ks",
         icon="media",
+        template="base/blocks/embed_block.html",
     )
