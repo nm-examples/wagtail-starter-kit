@@ -1,0 +1,46 @@
+@use '../vars.scss' as *;
+
+[role=navigation] {
+    button:first-child {
+        display: block;
+        @media screen and (min-width: $md) {
+            display: none;
+        }
+    }
+    > div {
+        position: absolute;
+        z-index: 1;
+        top: -3px;
+        left: 100px;
+        margin-left: -100%;
+        padding: 20px;
+        opacity: 0;
+        background-color: rgba(255, 255, 255, 0.9);
+        border-radius: 5px;
+        a[role=button] {
+            display: block;
+            margin-bottom: 3px;
+        }
+        @media screen and (min-width: $md) {
+            position: inherit;
+            top: auto;
+            left: auto;
+            margin-left: 0;
+            padding: 0;
+            opacity: 1;
+            background-color: transparent;
+            border-radius: 0;
+            a[role=button] {
+                display: inline-block;
+            }
+        }
+    }
+    &.is-open {
+        > div {
+            margin-left: 0;
+            opacity: 1;
+            transition: all 0.3s ease;
+        }
+    }
+
+}
