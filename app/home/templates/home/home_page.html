@@ -7,10 +7,8 @@
 
 {% image page.image fill-1920x1080 as hero_image %}
 
-<article style="background-image: url('{{ hero_image.url }}'); background-size: cover; background-position: center; min-height: 420px;">
-    <p>
-        <mark>{{ page.hero_text }}</mark>
-    </p>
+<article style="background-image: url('{{ hero_image.url }}')" role="hero">
+    <mark>{{ page.hero_text }}</mark>
     {% if page.hero_cta_link %}
     <a href="{% pageurl page.hero_cta_link %}" role="button">
         {% firstof page.hero_cta page.hero_cta_link.title %}
