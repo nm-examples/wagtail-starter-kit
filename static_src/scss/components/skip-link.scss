@@ -1,0 +1,9 @@
+// Skip link styles
+.skip-link {
+    position: absolute;
+    top: -30px;
+}
+
+.skip-link:focus-visible {
+    top: 5px;
+}

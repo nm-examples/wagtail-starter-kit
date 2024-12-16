@@ -1,0 +1,37 @@
+@use '../vars.scss' as *;
+
+// Hero styles
+[role=hero] {
+    display: relative;
+    min-height: 200px;
+    background-position: bottom;
+    background-size: cover;
+    position: relative;
+    mark {
+        display: block;
+        background: transparent;
+        text-align: center;
+        font-size: 2rem;
+        font-weight: bold;
+        color: white;
+        text-shadow: 2px 2px 2px rgba(0, 0, 0, 0.5);
+    }
+    [role=button] {
+        position: absolute;
+        bottom: -10px;
+        left: 50%;
+        transform: translateX(-50%);
+    }
+    @media screen and (min-width: $sm) {
+        min-height: 300px;
+    }
+    @media screen and (min-width: $md) {
+        min-height: 400px;
+    }
+    @media screen and (min-width: $lg) {
+        min-height: 500px;
+    }
+    @media screen and (min-width: $xl) {
+        min-height: 600px;
+    }
+}
