@@ -184,11 +184,11 @@ class Command(BaseCommand):
         ]
 
         sizes = [
-            (800, 600),  # Landscape
-            (600, 800),  # Portrait
-            (1200, 400),  # Wide banner
-            (400, 400),  # Square
-            (1024, 768),  # Standard
+            (1600, 1200),  # Landscape
+            (1200, 1600),  # Portrait
+            (2400, 800),  # Wide banner
+            (800, 800),  # Square
+            (2048, 1536),  # Standard
         ]
 
         for i in range(count):
