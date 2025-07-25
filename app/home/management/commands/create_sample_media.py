@@ -26,7 +26,7 @@ class Command(BaseCommand):
             "--documents",
             type=int,
             default=50,
-            help="Number of sample documents to create (default: 5)",
+            help="Number of sample documents to create (default: 50)",
         )
         parser.add_argument(
             "--clear",
