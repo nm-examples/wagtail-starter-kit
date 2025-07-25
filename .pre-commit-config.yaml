@@ -1,6 +1,6 @@
 repos:
   - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v3.2.0
+    rev: v5.0.0
     hooks:
       - id: trailing-whitespace
       - id: end-of-file-fixer
@@ -16,16 +16,16 @@ repos:
       - id: isort
         name: isort (python)
   - repo: https://github.com/pycqa/flake8
-    rev: 7.1.2  # Keep in sync with locked version
+    rev: 7.3.0  # Keep in sync with locked version
     hooks:
     -   id: flake8
   - repo: https://github.com/asottile/pyupgrade
-    rev: v3.19.1  # Keep in sync with locked version
+    rev: v3.20.0  # Keep in sync with locked version
     hooks:
     -   id: pyupgrade
         args: [--py310-plus]
   - repo: https://github.com/adamchainz/django-upgrade
-    rev: 1.23.1  # Keep in sync with locked version
+    rev: 1.25.0  # Keep in sync with locked version
     hooks:
     -   id: django-upgrade
-        args: [--target-version, "5.1"]   # Replace with Django version
+        args: [--target-version, "5.2"]   # Replace with Django version
