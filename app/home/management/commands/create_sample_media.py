@@ -20,7 +20,7 @@ class Command(BaseCommand):
             "--images",
             type=int,
             default=75,
-            help="Number of sample images to create (default: 10)",
+            help="Number of sample images to create (default: 75)",
         )
         parser.add_argument(
             "--documents",
