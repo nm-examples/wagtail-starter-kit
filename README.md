@@ -67,6 +67,22 @@ When you first run the project you may notice that no styling is applied. This i
 
 The project uses Docker for local development. The Wagtail project is in the `app` directory. The project is set up to use a SQLite database by default. You can change this to use Mysql or Postgres. [Read on](./docs/backend-development.md)
 
+## Management Commands
+
+The project includes custom Django management commands to help with development and testing. These commands can be used to generate sample content, manage data, and perform administrative tasks.
+
+For detailed documentation on all available commands, see [Management Commands Documentation](./docs/management-commands.md).
+
+### Quick Examples
+
+```bash
+# Create sample images and documents for testing
+docker exec -it wagtail-starter-kit-app-1 python manage.py create_sample_media
+
+# Reset all sample content
+docker exec -it wagtail-starter-kit-app-1 python manage.py create_sample_media --reset
+```
+
 ## View the site
 
 The site will be available at [http://localhost:8000](http://localhost:8000).
