@@ -1,3 +1,4 @@
+import datetime
 import io
 import random
 import string
@@ -633,8 +634,6 @@ Files: {len(zip_docs)}
 
     def get_random_date(self):
         """Generate a random date string"""
-        import datetime
-        import random
 
         start_date = datetime.date(2024, 1, 1)
         end_date = datetime.date.today()
