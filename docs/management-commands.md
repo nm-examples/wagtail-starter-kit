@@ -4,8 +4,72 @@ This document provides detailed information about the custom Django management c
 
 ## Table of Contents
 
+- [populate_homepage](#populate_homepage)
 - [create_sample_media](#create_sample_media)
 - [Future Commands](#future-commands)
+
+---
+
+## populate_homepage
+
+**Location**: `app/home/management/commands/populate_homepage.py`
+
+**Purpose**: Populates the existing home page with sample body content for testing and demonstration purposes. If images exist in the media library, one will be randomly selected and included in the content.
+
+### Description
+
+The `populate_homepage` command adds rich HTML content to the body field of your site's home page. This is useful for:
+
+- Setting up a new Wagtail site with meaningful placeholder content
+- Demonstrating Wagtail's rich text editing capabilities including image embeds
+- Providing a starting point for content editors
+- Testing page layouts and styling with realistic content and media
+
+The generated content includes:
+
+- **Welcome message** with Wagtail introduction
+- **Random image embed** (if images are available in the media library)
+- **Getting started guide** with admin links
+- **Feature overview** of the starter kit
+- **Next steps** for development
+
+### Usage
+
+```bash
+# Basic usage (populates empty home page)
+python manage.py populate_homepage
+
+# Overwrite existing content
+python manage.py populate_homepage --overwrite
+```
+
+### Options
+
+| Option | Description |
+|--------|-------------|
+| `--overwrite` | Overwrite existing body content if it already exists |
+
+### Examples
+
+#### Populate empty home page
+```bash
+docker exec -it wagtail-starter-kit-app-1 python manage.py populate_homepage
+```
+
+#### Replace existing content
+```bash
+docker exec -it wagtail-starter-kit-app-1 python manage.py populate_homepage --overwrite
+```
+
+### Technical Implementation
+
+- Uses Django's management command framework
+- Safely updates the HomePage model via Django ORM
+- Automatically selects a random image from the media library if available
+- Embeds images using Wagtail's rich text embed format
+- Creates a new revision and publishes it to track the change
+- Provides clear feedback on success/failure states and image selection
+- Handles cases where no home page exists or no images are available
 
 ---
 
@@ -15,7 +79,7 @@ This document provides detailed information about the custom Django management c
 
 **Purpose**: Creates sample images and documents (media files) for testing and demonstration purposes in your Wagtail CMS.
 
-### Description
+### Overview
 
 The `create_sample_media` command generates realistic sample content including:
 
@@ -29,7 +93,7 @@ This command is perfect for:
 - Testing search functionality with varied content
 - Creating realistic data for development and staging environments
 
-### Usage
+### Command Usage
 
 ```bash
 # Basic usage (creates 75 images and 50 documents by default)
@@ -48,7 +112,7 @@ python manage.py create_sample_media --no-zip
 python manage.py create_sample_media --reset
 ```
 
-### Options
+### Command Options
 
 | Option | Type | Default | Description |
 |--------|------|---------|-------------|
@@ -58,7 +122,7 @@ python manage.py create_sample_media --reset
 | `--no-zip` | Flag | False | Skip creating ZIP archives of the documents |
 | `--reset` | Flag | False | Delete all existing images and documents without creating new ones |
 
-### Generated Content Details
+### Content Details
 
 #### Images
 - **Formats**: JPEG with 85% quality
@@ -101,7 +165,7 @@ Each ZIP file includes:
 - A README.txt file explaining the archive contents
 - Proper file organization
 
-### Examples
+### Command Examples
 
 #### Creating a small test set
 ```bash
@@ -118,7 +182,7 @@ docker exec -it wagtail-starter-kit-app-1 python manage.py create_sample_media -
 docker exec -it wagtail-starter-kit-app-1 python manage.py create_sample_media --reset
 ```
 
-### Technical Implementation
+### Implementation Details
 
 #### Dependencies
 - **PIL (Pillow)**: For dynamic image generation

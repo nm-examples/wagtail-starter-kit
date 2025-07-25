@@ -76,6 +76,9 @@ For detailed documentation on all available commands, see [Management Commands D
 ### Quick Examples
 
 ```bash
+# Populate the home page with sample content
+docker exec -it wagtail-starter-kit-app-1 python manage.py populate_homepage
+
 # Create sample images and documents for testing
 docker exec -it wagtail-starter-kit-app-1 python manage.py create_sample_media
 
