@@ -155,7 +155,7 @@ python manage.py populate_homepage
 python manage.py populate_homepage --overwrite
 ```
 
-### Options
+### Command Options
 
 | Option | Description |
 |--------|-------------|
