@@ -1,20 +1,14 @@
-/**
- * This is a simple example of a class in ES6.
- * It will log a message to the console.
- * Remove this content and write your scripts as required.
- */
-class ShowMessage {
-    constructor(times=3) {
-        this.message = 'Hello from Wagtail starter kit!';
-        this.times = times;
+class Navigation {
+    constructor() {
+        this.menu = document.querySelector('[role="navigation"]');
+        this.menuButton = this.menu.querySelector('button:first-of-type');
+        this.menuButton.addEventListener('click', this.toggleMenu.bind(this));
+        console.log('Navigation initialized');
     }
 
-    showMessage() {
-        for (let i = 0; i < this.times; i++) {
-            console.log(this.message);
-        }
+    toggleMenu() {
+        this.menu.classList.toggle('is-open');
     }
 }
 
-const showMessage = new ShowMessage();
-showMessage.showMessage();
+new Navigation();

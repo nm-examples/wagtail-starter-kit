@@ -5,44 +5,49 @@
 {% block body_class %}template-blogindexpage{% endblock %}
 
 {% block content %}
+
+<article>
+    <h1>{{ page.title }}</h1>
+    <div class="intro">{{ page.intro|richtext }}</div>
+</article>
+
+{% for post in blogpages %}
+
+{% if forloop.first or forloop.counter0|divisibleby:3 %}
+{% comment %} Start a new row {% endcomment %}
+<div class="grid">
+    {% endif %}
+
     <article>
-        <h1>{{ page.title }}</h1>
-        <div class="intro">{{ page.intro|richtext }}</div>
+        {% with post=post.specific %}
+        <header>
+            <h2><a href="{% pageurl post %}">{{ post.title }}</a></h2>
+        </header>
+        <div class="grid">
+            {% with post.main_image as main_image %}
+
+            {% if main_image %}
+            <figure>
+                {% image main_image fill-160x100 %}
+            </figure>
+            {% endif %}
+
+            {% endwith %}
+            <div>
+                <p>{{ post.intro }}</p>
+                {% comment %} Don't display the body text here
+                {{ post.body|richtext }}
+                {% endcomment %}
+            </div>
+        </div>
+        {% endwith %}
     </article>
 
-    {% for post in blogpages %}
+    {% if forloop.last or forloop.counter|divisibleby:3 %}
+    {% comment %} End the row {% endcomment %}
+</div>
+{% endif %}
 
-        {% if forloop.first or forloop.counter0|divisibleby:2 %}
-        {% comment %} Start a new row {% endcomment %}
-        <div class="grid">
-        {% endif %}
-
-            <article>
-                {% with post=post.specific %}
-                <header>
-                    <h2><a href="{% pageurl post %}">{{ post.title }}</a></h2>
-                </header>
-                <div class="grid">
-                    {% with post.main_image as main_image %}
-                    {% if main_image %}
-                    <figure>
-                    {% image main_image fill-160x100 %}
-                    </figure>
-                    {% endif %}
-                {% endwith %}
-                    <div>
-                        <p>{{ post.intro }}</p>
-                        {{ post.body|richtext }}
-                    </div>
-                </div>
-                {% endwith %}
-            </article>
-
-        {% if forloop.last or forloop.counter|divisibleby:2 %}
-        {% comment %} End the row {% endcomment %}
-        </div>
-        {% endif %}
-
-    {% endfor %}
+{% endfor %}
 
 {% endblock %}
