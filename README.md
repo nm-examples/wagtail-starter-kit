@@ -82,6 +82,9 @@ docker exec -it wagtail-starter-kit-app-1 python manage.py populate_homepage
 # Create sample images and documents for testing
 docker exec -it wagtail-starter-kit-app-1 python manage.py create_sample_media
 
+# Create a complete blog structure with sample posts and authors
+docker exec -it wagtail-starter-kit-app-1 python manage.py populate_blog
+
 # Reset all sample content
 docker exec -it wagtail-starter-kit-app-1 python manage.py create_sample_media --reset
 ```
