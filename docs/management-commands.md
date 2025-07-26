@@ -161,7 +161,7 @@ python manage.py populate_homepage --overwrite
 |--------|-------------|
 | `--overwrite` | Overwrite existing body content if it already exists |
 
-### Examples
+### Command Examples
 
 #### Populate empty home page
 ```bash
