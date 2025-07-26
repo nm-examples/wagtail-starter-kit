@@ -4,73 +4,10 @@ This document provides detailed information about the custom Django management c
 
 ## Table of Contents
 
-- [populate_homepage](#populate_homepage)
 - [create_sample_media](#create_sample_media)
+- [populate_homepage](#populate_homepage)
 - [populate_blog](#populate_blog)
 - [Future Commands](#future-commands)
-
----
-
-## populate_homepage
-
-**Location**: `app/home/management/commands/populate_homepage.py`
-
-**Purpose**: Populates the existing home page with sample body content for testing and demonstration purposes. If images exist in the media library, one will be randomly selected and included in the content.
-
-### Description
-
-The `populate_homepage` command adds rich HTML content to the body field of your site's home page. This is useful for:
-
-- Setting up a new Wagtail site with meaningful placeholder content
-- Demonstrating Wagtail's rich text editing capabilities including image embeds
-- Providing a starting point for content editors
-- Testing page layouts and styling with realistic content and media
-
-The generated content includes:
-
-- **Welcome message** with Wagtail introduction
-- **Random image embed** (if images are available in the media library)
-- **Getting started guide** with admin links
-- **Feature overview** of the starter kit
-- **Next steps** for development
-
-### Usage
-
-```bash
-# Basic usage (populates empty home page)
-python manage.py populate_homepage
-
-# Overwrite existing content
-python manage.py populate_homepage --overwrite
-```
-
-### Options
-
-| Option | Description |
-|--------|-------------|
-| `--overwrite` | Overwrite existing body content if it already exists |
-
-### Examples
-
-#### Populate empty home page
-```bash
-docker exec -it wagtail-starter-kit-app-1 python manage.py populate_homepage
-```
-
-#### Replace existing content
-```bash
-docker exec -it wagtail-starter-kit-app-1 python manage.py populate_homepage --overwrite
-```
-
-### Technical Implementation
-
-- Uses Django's management command framework
-- Safely updates the HomePage model via Django ORM
-- Automatically selects a random image from the media library if available
-- Embeds images using Wagtail's rich text embed format
-- Creates a new revision and publishes it to track the change
-- Provides clear feedback on success/failure states and image selection
-- Handles cases where no home page exists or no images are available
 
 ---
 
@@ -183,12 +120,58 @@ docker exec -it wagtail-starter-kit-app-1 python manage.py create_sample_media -
 docker exec -it wagtail-starter-kit-app-1 python manage.py create_sample_media --reset
 ```
 
-### Implementation Details
+---
 
-#### Dependencies
-- **PIL (Pillow)**: For dynamic image generation
-- **zipfile**: For creating compressed archives
-- **Wagtail**: Uses `wagtail.images.models.Image` and `wagtail.documents.models.Document`
+## populate_homepage
+
+**Location**: `app/home/management/commands/populate_homepage.py`
+
+**Purpose**: Populates the existing home page with sample body content for testing and demonstration purposes. If images exist in the media library, one will be randomly selected and included in the content.
+
+### Description
+
+The `populate_homepage` command adds rich HTML content to the body field of your site's home page. This is useful for:
+
+- Setting up a new Wagtail site with meaningful placeholder content
+- Demonstrating Wagtail's rich text editing capabilities including image embeds
+- Providing a starting point for content editors
+- Testing page layouts and styling with realistic content and media
+
+The generated content includes:
+
+- **Welcome message** with Wagtail introduction
+- **Random image embed** (if images are available in the media library)
+- **Getting started guide** with admin links
+- **Feature overview** of the starter kit
+- **Next steps** for development
+
+### Usage
+
+```bash
+# Basic usage (populates empty home page)
+python manage.py populate_homepage
+
+# Overwrite existing content
+python manage.py populate_homepage --overwrite
+```
+
+### Options
+
+| Option | Description |
+|--------|-------------|
+| `--overwrite` | Overwrite existing body content if it already exists |
+
+### Examples
+
+#### Populate empty home page
+```bash
+docker exec -it wagtail-starter-kit-app-1 python manage.py populate_homepage
+```
+
+#### Replace existing content
+```bash
+docker exec -it wagtail-starter-kit-app-1 python manage.py populate_homepage --overwrite
+```
 
 ---
 
@@ -280,23 +263,6 @@ docker exec -it wagtail-starter-kit-app-1 python manage.py populate_blog --posts
 ```bash
 docker exec -it wagtail-starter-kit-app-1 python manage.py populate_blog --clear --posts 12 --authors 3
 ```
-
-### Sample Output
-
-When running the command, you'll see output like:
-```
-Blog index page already exists
-Blog tag index page already exists
-Using 3 existing authors
-Created 5 blog posts
-Successfully created blog structure with 5 posts and 3 authors
-```
-
-The command provides clear feedback on:
-- Whether blog structure already exists
-- Author creation vs. reuse
-- Number of posts created
-- Final summary of created content
 
 ---
 
