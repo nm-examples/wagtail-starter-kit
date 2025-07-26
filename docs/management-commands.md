@@ -145,7 +145,7 @@ The generated content includes:
 - **Feature overview** of the starter kit
 - **Next steps** for development
 
-### Usage
+### Command Usage
 
 ```bash
 # Basic usage (populates empty home page)
