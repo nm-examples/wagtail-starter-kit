@@ -15,25 +15,38 @@ from app.home.models import HomePage
 
 
 class Command(BaseCommand):
-    help = "Creates sample blog content including blog index, blog pages, and authors"
+    help = (
+        "Creates a complete blog structure with sample content including blog index pages, "
+        "blog posts with unique titles, authors, tags, and gallery images. Can be run "
+        "multiple times safely to add more content without conflicts."
+    )
 
     def add_arguments(self, parser):
         parser.add_argument(
             "--posts",
             type=int,
             default=10,
-            help="Number of blog posts to create (default: 10)",
+            help=(
+                "Number of blog posts to create (default: 10). Each post will have "
+                "unique titles, slugs, content, authors, and tags."
+            ),
         )
         parser.add_argument(
             "--authors",
             type=int,
             default=3,
-            help="Number of authors to create (default: 3)",
+            help=(
+                "Number of authors to create (default: 3). If authors already exist, "
+                "they will be reused instead of creating new ones."
+            ),
         )
         parser.add_argument(
             "--clear",
             action="store_true",
-            help="Clear existing blog content before creating new content",
+            help=(
+                "Clear existing blog content (posts and index pages) before creating "
+                "new content. Authors are preserved to maintain relationships."
+            ),
         )
 
     def handle(self, *args, **options):
