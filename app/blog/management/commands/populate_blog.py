@@ -108,9 +108,10 @@ class Command(BaseCommand):
             tag_index.delete()
         self.stdout.write("Cleared existing blog tag pages")
 
-        # # Finally delete authors
-        # Author.objects.all().delete()
-        # self.stdout.write("Cleared existing authors")
+    def clear_authors(self):
+        """Clear all authors"""
+        Author.objects.all().delete()
+        self.stdout.write("Cleared all authors")
 
     def create_blog_index(self, home_page):
         """Create or get the blog index page"""
