@@ -128,7 +128,7 @@ docker exec -it wagtail-starter-kit-app-1 python manage.py create_sample_media -
 
 **Purpose**: Populates the existing home page with sample body content for testing and demonstration purposes. If images exist in the media library, one will be randomly selected and included in the content.
 
-### Description
+### Overview
 
 The `populate_homepage` command adds rich HTML content to the body field of your site's home page. This is useful for:
 
