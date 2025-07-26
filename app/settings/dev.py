@@ -12,7 +12,7 @@ ALLOWED_HOSTS = ["*"]
 EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
 
 # Remove if not required
-INSTALLED_APPS += ["app.style_guide", "wagtail.contrib.styleguide"]  # noqa F405
+INSTALLED_APPS += ["wagtail.contrib.styleguide", "app.style_guide"]  # noqa F405
 
 
 try:
