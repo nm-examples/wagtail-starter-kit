@@ -266,7 +266,7 @@ class Command(BaseCommand):
             for tag in post_tags:
                 blog_post.tags.add(tag)
 
-            # Add gallery images (0-3 images per post)
+            # Add gallery images (1-6 images per post)
             if available_images:
                 num_images = random.randint(1, min(6, len(available_images)))
                 selected_images = random.sample(available_images, k=num_images)
