@@ -6,7 +6,9 @@ This document provides detailed information about the custom Django management c
 
 - [create_sample_media](#create_sample_media)
 - [populate_homepage](#populate_homepage)
+- [populate_settings](#populate_settings)
 - [populate_blog](#populate_blog)
+- [populate_portfolio](#populate_portfolio)
 - [Future Commands](#future-commands)
 
 ---
@@ -126,21 +128,29 @@ docker exec -it wagtail-starter-kit-app-1 python manage.py create_sample_media -
 
 **Location**: `app/home/management/commands/populate_homepage.py`
 
-**Purpose**: Populates the existing home page with sample body content for testing and demonstration purposes. If images exist in the media library, one will be randomly selected and included in the content.
+**Purpose**: Populates the existing home page with sample hero section and body content for testing and demonstration purposes. Automatically sets up hero images, text, call-to-action buttons, and links to other pages.
 
 ### Overview
 
-The `populate_homepage` command adds rich HTML content to the body field of your site's home page. This is useful for:
+The `populate_homepage` command sets up a complete home page with both hero section and body content. This is useful for:
 
-- Setting up a new Wagtail site with meaningful placeholder content
-- Demonstrating Wagtail's rich text editing capabilities including image embeds
+- Setting up a new Wagtail site with a professional-looking homepage
+- Demonstrating Wagtail's hero section functionality and rich text capabilities
 - Providing a starting point for content editors
 - Testing page layouts and styling with realistic content and media
+- Showcasing call-to-action functionality with links to other pages
 
 The generated content includes:
 
+**Hero Section:**
+- **Hero image** (randomly selected from media library if available)
+- **Hero text** (customizable introduction message)
+- **Call-to-action button** (customizable button text)
+- **CTA link** (automatically links to blog index, portfolio, or other available pages)
+
+**Body Content:**
 - **Welcome message** with Wagtail introduction
-- **Random image embed** (if images are available in the media library)
+- **Image embed** (different from hero image when possible)
 - **Getting started guide** with admin links
 - **Feature overview** of the starter kit
 - **Next steps** for development
@@ -148,22 +158,35 @@ The generated content includes:
 ### Command Usage
 
 ```bash
-# Basic usage (populates empty home page)
-python manage.py populate_homepage
+# Basic usage (populates empty home page with default hero content)
+docker exec -it wagtail-starter-kit-app-1 python manage.py populate_homepage
 
 # Overwrite existing content
-python manage.py populate_homepage --overwrite
+docker exec -it wagtail-starter-kit-app-1 python manage.py populate_homepage --overwrite
+
+# Custom hero text and call-to-action
+docker exec -it wagtail-starter-kit-app-1 python manage.py populate_homepage \
+  --hero-text "Welcome to My Amazing Site" \
+  --hero-cta "Start Exploring"
+
+# Complete customization with overwrite
+docker exec -it wagtail-starter-kit-app-1 python manage.py populate_homepage \
+  --overwrite \
+  --hero-text "Your Custom Message Here" \
+  --hero-cta "Get Started Today"
 ```
 
 ### Command Options
 
-| Option | Description |
-|--------|-------------|
-| `--overwrite` | Overwrite existing body content if it already exists |
+| Option | Type | Default | Description |
+|--------|------|---------|-------------|
+| `--overwrite` | Flag | False | Overwrite existing content if it already exists |
+| `--hero-text` | String | "Welcome to Your Amazing Wagtail Site" | Custom hero text to display |
+| `--hero-cta` | String | "Explore Our Content" | Custom call-to-action button text |
 
 ### Command Examples
 
-#### Populate empty home page
+#### Populate empty home page with defaults
 ```bash
 docker exec -it wagtail-starter-kit-app-1 python manage.py populate_homepage
 ```
@@ -171,6 +194,133 @@ docker exec -it wagtail-starter-kit-app-1 python manage.py populate_homepage
 #### Replace existing content
 ```bash
 docker exec -it wagtail-starter-kit-app-1 python manage.py populate_homepage --overwrite
+```
+
+#### Custom hero content for branding
+```bash
+docker exec -it wagtail-starter-kit-app-1 python manage.py populate_homepage \
+  --hero-text "Welcome to ACME Corporation" \
+  --hero-cta "Discover Our Solutions"
+```
+
+#### Complete setup with custom content
+```bash
+docker exec -it wagtail-starter-kit-app-1 python manage.py populate_homepage \
+  --overwrite \
+  --hero-text "Your Business, Elevated" \
+  --hero-cta "Get Started Today"
+```
+
+---
+
+## populate_settings
+
+**Location**: `app/base/management/commands/populate_settings.py`
+
+**Purpose**: Populates the NavigationSettings with sample social media URLs and FooterText with sample content for site-wide settings and branding.
+
+### Overview
+
+The `populate_settings` command sets up essential site-wide settings including:
+
+- **NavigationSettings**: Social media URLs for LinkedIn, GitHub, and Mastodon that can be displayed in headers, footers, or navigation areas
+- **FooterText**: Rich HTML content for site footer including copyright notices and branding
+
+This command is useful for:
+- Initial site setup with default social media links
+- Establishing consistent footer content across the site
+- Setting up branding and contact information
+- Providing starting content for site-wide settings
+
+### Command Usage
+
+```bash
+# Basic usage (uses default Wagtail/Torchbox URLs and copyright notice)
+docker exec -it wagtail-starter-kit-app-1 python manage.py populate_settings
+
+# Custom social media URLs
+docker exec -it wagtail-starter-kit-app-1 python manage.py populate_settings \
+  --linkedin "https://www.linkedin.com/company/yourcompany" \
+  --github "https://github.com/yourorganization" \
+  --mastodon "https://mastodon.social/@youraccount"
+
+# Custom footer text with HTML
+docker exec -it wagtail-starter-kit-app-1 python manage.py populate_settings \
+  --footer-text "<p>&copy; 2024 Your Company. All rights reserved. Built with <a href='https://wagtail.org/'>Wagtail</a>.</p>"
+
+# Overwrite existing settings
+docker exec -it wagtail-starter-kit-app-1 python manage.py populate_settings --overwrite
+
+# Full customization
+docker exec -it wagtail-starter-kit-app-1 python manage.py populate_settings \
+  --overwrite \
+  --linkedin "https://www.linkedin.com/company/mycompany" \
+  --github "https://github.com/mycompany" \
+  --mastodon "https://fosstodon.org/@mycompany" \
+  --footer-text "<p>&copy; 2024 My Company. Built with love and <a href='https://wagtail.org/'>Wagtail</a>.</p>"
+```
+
+### Command Options
+
+| Option | Type | Default | Description |
+|--------|------|---------|-------------|
+| `--overwrite` | Flag | False | Overwrite existing settings if they already exist |
+| `--linkedin` | String | `https://www.linkedin.com/company/torchbox` | LinkedIn company URL |
+| `--github` | String | `https://github.com/wagtail/wagtail` | GitHub organization or user URL |
+| `--mastodon` | String | `https://fosstodon.org/@wagtail` | Mastodon account URL |
+| `--footer-text` | String | Default copyright with Wagtail link | Footer content (HTML allowed) |
+
+### Settings Details
+
+#### NavigationSettings
+- **Model**: `BaseGenericSetting` (global site settings)
+- **Fields**:
+  - `linkedin_url`: LinkedIn company or personal profile URL
+  - `github_url`: GitHub organization or user profile URL
+  - `mastodon_url`: Mastodon account URL
+- **Usage**: Can be accessed in templates via `settings.base.NavigationSettings`
+- **Admin**: Editable through Wagtail admin under Settings
+
+#### FooterText
+- **Model**: `Snippet` with `DraftStateMixin`, `RevisionMixin`, `PreviewableMixin`
+- **Fields**:
+  - `body`: Rich text field supporting HTML content
+- **Features**:
+  - Draft/live states for content staging
+  - Revision history for tracking changes
+  - Preview functionality for content review
+- **Usage**: Can be included in footer templates as a snippet
+- **Admin**: Manageable through Wagtail admin under Snippets > Footer Text
+
+### Command Examples
+
+#### Basic setup for new site
+```bash
+docker exec -it wagtail-starter-kit-app-1 python manage.py populate_settings
+```
+
+#### Setup with your organization's URLs
+```bash
+docker exec -it wagtail-starter-kit-app-1 python manage.py populate_settings \
+  --linkedin "https://www.linkedin.com/company/yourcompany" \
+  --github "https://github.com/yourorg"
+```
+
+#### Update existing settings with new footer
+```bash
+docker exec -it wagtail-starter-kit-app-1 python manage.py populate_settings \
+  --overwrite \
+  --footer-text "<p>&copy; 2024 Your Company Name. All rights reserved.</p>"
+```
+
+#### Complete customization
+```bash
+docker exec -it wagtail-starter-kit-app-1 python manage.py populate_settings \
+  --overwrite \
+  --linkedin "https://www.linkedin.com/company/acme-corp" \
+  --github "https://github.com/acme-corp" \
+  --mastodon "https://mastodon.social/@acmecorp" \
+  --footer-text "<p>&copy; 2024 ACME Corporation. Innovating since 1949. <a href='/privacy/'>Privacy Policy</a></p>"
 ```
 
 ---
@@ -262,6 +412,75 @@ docker exec -it wagtail-starter-kit-app-1 python manage.py populate_blog --posts
 #### Reset and start fresh
 ```bash
 docker exec -it wagtail-starter-kit-app-1 python manage.py populate_blog --clear --posts 12 --authors 3
+```
+
+---
+
+## populate_portfolio
+
+**Location**: `app/portfolio/management/commands/populate_portfolio.py`
+
+**Purpose**: Creates a professional portfolio page with sample content using the PortfolioStreamBlock to showcase projects, skills, and experience.
+
+### Overview
+
+The `populate_portfolio` command creates a comprehensive portfolio page with rich StreamField content including:
+
+- **Introduction Section**: Welcome heading and descriptive paragraph
+- **Skills Section**: Card-based display of technical skills and expertise areas
+- **Projects Section**: Showcase of sample projects with descriptions and images
+- **Featured Blog Posts**: Dynamically links to existing blog posts (if available)
+- **Contact Section**: Professional contact information and call-to-action
+- **Media Integration**: Automatic image selection from media library when available
+- **Menu Integration**: Automatically sets `show_in_menus=True` for navigation visibility
+
+### Command Usage
+
+```bash
+# Basic usage (creates portfolio page with default title)
+docker exec -it wagtail-starter-kit-app-1 python manage.py populate_portfolio
+
+# Custom title
+docker exec -it wagtail-starter-kit-app-1 python manage.py populate_portfolio --title "My Work"
+
+# Overwrite existing portfolio page
+docker exec -it wagtail-starter-kit-app-1 python manage.py populate_portfolio --overwrite
+
+# Complete customization with overwrite
+docker exec -it wagtail-starter-kit-app-1 python manage.py populate_portfolio \
+  --overwrite \
+  --title "Professional Portfolio"
+```
+
+### Command Options
+
+| Option | Type | Default | Description |
+|--------|------|---------|-------------|
+| `--overwrite` | Flag | False | Delete existing portfolio page and create a new one |
+| `--title` | String | "Portfolio" | Custom title for the portfolio page |
+
+### Command Examples
+
+#### Basic portfolio setup
+```bash
+docker exec -it wagtail-starter-kit-app-1 python manage.py populate_portfolio
+```
+
+#### Custom branding
+```bash
+docker exec -it wagtail-starter-kit-app-1 python manage.py populate_portfolio --title "My Creative Work"
+```
+
+#### Replace existing portfolio
+```bash
+docker exec -it wagtail-starter-kit-app-1 python manage.py populate_portfolio --overwrite --title "Updated Portfolio"
+```
+
+#### Professional setup
+```bash
+docker exec -it wagtail-starter-kit-app-1 python manage.py populate_portfolio \
+  --title "Professional Experience" \
+  --overwrite
 ```
 
 ---

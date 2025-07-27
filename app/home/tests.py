@@ -18,7 +18,7 @@ class HomeTestCase(TestCase):
     def test_home_view(self):
         response = self.client.get("/")
         self.assertEqual(response.status_code, 200)
-        self.assertContains(response, "Wagtail Blog Tutorial")
+        self.assertContains(response, "Home")
         self.assertTemplateUsed(response, "home/home_page.html")
 
     def test_home_admin(self):
@@ -31,8 +31,12 @@ class HomeTestCase(TestCase):
         """Test the populate_homepage management command"""
         home_page = HomePage.objects.first()
 
-        # Ensure home page starts with empty body
+        # Ensure home page starts with empty content
         home_page.body = ""
+        home_page.image = None
+        home_page.hero_text = ""
+        home_page.hero_cta = ""
+        home_page.hero_cta_link = None
         home_page.save()
 
         # Create output capture
@@ -47,7 +51,14 @@ class HomeTestCase(TestCase):
         # Check that body content was added
         self.assertNotEqual(home_page.body, "")
         self.assertIn("Welcome to Your Wagtail Site", home_page.body)
-        self.assertIn("Successfully populated home page body content", out.getvalue())
+
+        # Check that hero section was populated
+        self.assertEqual(home_page.hero_text, "Welcome to Your Amazing Wagtail Site")
+        self.assertEqual(home_page.hero_cta, "Explore Our Content")
+
+        # Check success message
+        self.assertIn("Successfully populated home page content", out.getvalue())
+        self.assertIn("Hero section: ✓", out.getvalue())
 
     def test_populate_homepage_command_with_existing_content(self):
         """Test the populate_homepage management command when content already exists"""
@@ -55,6 +66,7 @@ class HomeTestCase(TestCase):
 
         # Set some existing content
         home_page.body = "Existing content"
+        home_page.hero_text = "Existing hero"
         home_page.save()
 
         # Create output capture
@@ -68,7 +80,9 @@ class HomeTestCase(TestCase):
 
         # Check that content wasn't changed
         self.assertEqual(home_page.body, "Existing content")
-        self.assertIn("already has body content", out.getvalue())
+        self.assertEqual(home_page.hero_text, "Existing hero")
+        self.assertIn("already has content", out.getvalue())
+        self.assertIn("Hero section: ✓", out.getvalue())
 
     def test_populate_homepage_command_with_overwrite(self):
         """Test the populate_homepage management command with overwrite option"""
@@ -76,6 +90,7 @@ class HomeTestCase(TestCase):
 
         # Set some existing content
         home_page.body = "Existing content"
+        home_page.hero_text = "Old hero text"
         home_page.save()
 
         # Create output capture
@@ -90,20 +105,23 @@ class HomeTestCase(TestCase):
         # Check that content was changed
         self.assertNotEqual(home_page.body, "Existing content")
         self.assertIn("Welcome to Your Wagtail Site", home_page.body)
-        self.assertIn("Successfully populated home page body content", out.getvalue())
+        self.assertEqual(home_page.hero_text, "Welcome to Your Amazing Wagtail Site")
+        self.assertIn("Successfully populated home page content", out.getvalue())
 
     def test_populate_homepage_command_with_image(self):
         """Test the populate_homepage command when images are available"""
         home_page = HomePage.objects.first()
 
         # Create a test image
-        Image.objects.create(
+        test_image = Image.objects.create(
             title="Test Image",
             file=get_test_image_file(),
         )
 
-        # Ensure home page starts with empty body
+        # Ensure home page starts with empty content
         home_page.body = ""
+        home_page.image = None
+        home_page.hero_text = ""
         home_page.save()
 
         # Create output capture
@@ -119,8 +137,14 @@ class HomeTestCase(TestCase):
         self.assertNotEqual(home_page.body, "")
         self.assertIn("Welcome to Your Wagtail Site", home_page.body)
         self.assertIn('embedtype="image"', home_page.body)
-        self.assertIn("Selected image:", out.getvalue())
-        self.assertIn("with image:", out.getvalue())
+
+        # Check that hero section has image
+        self.assertIsNotNone(home_page.image)
+        self.assertEqual(home_page.image, test_image)
+
+        # Check output messages
+        self.assertIn("Selected hero image:", out.getvalue())
+        self.assertIn("Images used:", out.getvalue())
 
     def test_populate_homepage_command_without_images(self):
         """Test the populate_homepage command when no images are available"""
@@ -129,8 +153,10 @@ class HomeTestCase(TestCase):
         # Remove all images
         Image.objects.all().delete()
 
-        # Ensure home page starts with empty body
+        # Ensure home page starts with empty content
         home_page.body = ""
+        home_page.image = None
+        home_page.hero_text = ""
         home_page.save()
 
         # Create output capture
@@ -146,4 +172,41 @@ class HomeTestCase(TestCase):
         self.assertNotEqual(home_page.body, "")
         self.assertIn("Welcome to Your Wagtail Site", home_page.body)
         self.assertNotIn('embedtype="image"', home_page.body)
+
+        # Check that hero section has no image but has text
+        self.assertIsNone(home_page.image)
+        self.assertEqual(home_page.hero_text, "Welcome to Your Amazing Wagtail Site")
+
+        # Check output messages
         self.assertIn("No images found", out.getvalue())
+
+    def test_populate_homepage_command_with_custom_hero_content(self):
+        """Test the populate_homepage command with custom hero text and CTA"""
+        home_page = HomePage.objects.first()
+
+        # Ensure home page starts with empty content
+        home_page.body = ""
+        home_page.hero_text = ""
+        home_page.hero_cta = ""
+        home_page.save()
+
+        # Create output capture
+        out = StringIO()
+
+        # Run the command with custom hero content
+        call_command(
+            "populate_homepage",
+            "--hero-text",
+            "Custom Hero Text",
+            "--hero-cta",
+            "Custom CTA Button",
+            stdout=out,
+        )
+
+        # Refresh from database
+        home_page.refresh_from_db()
+
+        # Check that custom hero content was set
+        self.assertEqual(home_page.hero_text, "Custom Hero Text")
+        self.assertEqual(home_page.hero_cta, "Custom CTA Button")
+        self.assertIn("Successfully populated home page content", out.getvalue())

@@ -79,11 +79,17 @@ For detailed documentation on all available commands, see [Management Commands D
 # Create sample images and documents for testing
 docker exec -it wagtail-starter-kit-app-1 python manage.py create_sample_media
 
-# Populate the home page with sample content
+# Set up site-wide settings (social media links, footer text)
+docker exec -it wagtail-starter-kit-app-1 python manage.py populate_settings
+
+# Populate the home page with sample hero section and content
 docker exec -it wagtail-starter-kit-app-1 python manage.py populate_homepage
 
 # Create a complete blog structure with sample posts and authors
 docker exec -it wagtail-starter-kit-app-1 python manage.py populate_blog
+
+# Create a professional portfolio page with projects and skills
+docker exec -it wagtail-starter-kit-app-1 python manage.py populate_portfolio
 ```
 
 ## View the site
