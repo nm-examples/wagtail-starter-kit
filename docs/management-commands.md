@@ -6,6 +6,7 @@ This document provides detailed information about the custom Django management c
 
 - [create_sample_media](#create_sample_media)
 - [populate_homepage](#populate_homepage)
+- [populate_settings](#populate_settings)
 - [populate_blog](#populate_blog)
 - [Future Commands](#future-commands)
 
@@ -171,6 +172,118 @@ docker exec -it wagtail-starter-kit-app-1 python manage.py populate_homepage
 #### Replace existing content
 ```bash
 docker exec -it wagtail-starter-kit-app-1 python manage.py populate_homepage --overwrite
+```
+
+---
+
+## populate_settings
+
+**Location**: `app/base/management/commands/populate_settings.py`
+
+**Purpose**: Populates the NavigationSettings with sample social media URLs and FooterText with sample content for site-wide settings and branding.
+
+### Overview
+
+The `populate_settings` command sets up essential site-wide settings including:
+
+- **NavigationSettings**: Social media URLs for LinkedIn, GitHub, and Mastodon that can be displayed in headers, footers, or navigation areas
+- **FooterText**: Rich HTML content for site footer including copyright notices and branding
+
+This command is useful for:
+- Initial site setup with default social media links
+- Establishing consistent footer content across the site
+- Setting up branding and contact information
+- Providing starting content for site-wide settings
+
+### Command Usage
+
+```bash
+# Basic usage (uses default Wagtail/Torchbox URLs and copyright notice)
+python manage.py populate_settings
+
+# Custom social media URLs
+python manage.py populate_settings \
+  --linkedin "https://www.linkedin.com/company/yourcompany" \
+  --github "https://github.com/yourorganization" \
+  --mastodon "https://mastodon.social/@youraccount"
+
+# Custom footer text with HTML
+python manage.py populate_settings \
+  --footer-text "<p>&copy; 2024 Your Company. All rights reserved. Built with <a href='https://wagtail.org/'>Wagtail</a>.</p>"
+
+# Overwrite existing settings
+python manage.py populate_settings --overwrite
+
+# Full customization
+python manage.py populate_settings \
+  --overwrite \
+  --linkedin "https://www.linkedin.com/company/mycompany" \
+  --github "https://github.com/mycompany" \
+  --mastodon "https://fosstodon.org/@mycompany" \
+  --footer-text "<p>&copy; 2024 My Company. Built with love and <a href='https://wagtail.org/'>Wagtail</a>.</p>"
+```
+
+### Command Options
+
+| Option | Type | Default | Description |
+|--------|------|---------|-------------|
+| `--overwrite` | Flag | False | Overwrite existing settings if they already exist |
+| `--linkedin` | String | `https://www.linkedin.com/company/torchbox` | LinkedIn company URL |
+| `--github` | String | `https://github.com/wagtail/wagtail` | GitHub organization or user URL |
+| `--mastodon` | String | `https://fosstodon.org/@wagtail` | Mastodon account URL |
+| `--footer-text` | String | Default copyright with Wagtail link | Footer content (HTML allowed) |
+
+### Settings Details
+
+#### NavigationSettings
+- **Model**: `BaseGenericSetting` (global site settings)
+- **Fields**:
+  - `linkedin_url`: LinkedIn company or personal profile URL
+  - `github_url`: GitHub organization or user profile URL
+  - `mastodon_url`: Mastodon account URL
+- **Usage**: Can be accessed in templates via `settings.base.NavigationSettings`
+- **Admin**: Editable through Wagtail admin under Settings
+
+#### FooterText
+- **Model**: `Snippet` with `DraftStateMixin`, `RevisionMixin`, `PreviewableMixin`
+- **Fields**:
+  - `body`: Rich text field supporting HTML content
+- **Features**:
+  - Draft/live states for content staging
+  - Revision history for tracking changes
+  - Preview functionality for content review
+- **Usage**: Can be included in footer templates as a snippet
+- **Admin**: Manageable through Wagtail admin under Snippets > Footer Text
+
+### Command Examples
+
+#### Basic setup for new site
+```bash
+docker exec -it wagtail-starter-kit-app-1 python manage.py populate_settings
+```
+
+#### Setup with your organization's URLs
+```bash
+docker exec -it wagtail-starter-kit-app-1 python manage.py populate_settings \
+  --linkedin "https://www.linkedin.com/company/yourcompany" \
+  --github "https://github.com/yourorg"
+```
+
+#### Update existing settings with new footer
+```bash
+docker exec -it wagtail-starter-kit-app-1 python manage.py populate_settings \
+  --overwrite \
+  --footer-text "<p>&copy; 2024 Your Company Name. All rights reserved.</p>"
+```
+
+#### Complete customization
+```bash
+docker exec -it wagtail-starter-kit-app-1 python manage.py populate_settings \
+  --overwrite \
+  --linkedin "https://www.linkedin.com/company/acme-corp" \
+  --github "https://github.com/acme-corp" \
+  --mastodon "https://mastodon.social/@acmecorp" \
+  --footer-text "<p>&copy; 2024 ACME Corporation. Innovating since 1949. <a href='/privacy/'>Privacy Policy</a></p>"
 ```
 
 ---
