@@ -18,7 +18,7 @@ class HomeTestCase(TestCase):
     def test_home_view(self):
         response = self.client.get("/")
         self.assertEqual(response.status_code, 200)
-        self.assertContains(response, "Wagtail Blog Tutorial")
+        self.assertContains(response, "Home")
         self.assertTemplateUsed(response, "home/home_page.html")
 
     def test_home_admin(self):
