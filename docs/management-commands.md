@@ -127,21 +127,29 @@ docker exec -it wagtail-starter-kit-app-1 python manage.py create_sample_media -
 
 **Location**: `app/home/management/commands/populate_homepage.py`
 
-**Purpose**: Populates the existing home page with sample body content for testing and demonstration purposes. If images exist in the media library, one will be randomly selected and included in the content.
+**Purpose**: Populates the existing home page with sample hero section and body content for testing and demonstration purposes. Automatically sets up hero images, text, call-to-action buttons, and links to other pages.
 
 ### Overview
 
-The `populate_homepage` command adds rich HTML content to the body field of your site's home page. This is useful for:
+The `populate_homepage` command sets up a complete home page with both hero section and body content. This is useful for:
 
-- Setting up a new Wagtail site with meaningful placeholder content
-- Demonstrating Wagtail's rich text editing capabilities including image embeds
+- Setting up a new Wagtail site with a professional-looking homepage
+- Demonstrating Wagtail's hero section functionality and rich text capabilities
 - Providing a starting point for content editors
 - Testing page layouts and styling with realistic content and media
+- Showcasing call-to-action functionality with links to other pages
 
 The generated content includes:
 
+**Hero Section:**
+- **Hero image** (randomly selected from media library if available)
+- **Hero text** (customizable introduction message)
+- **Call-to-action button** (customizable button text)
+- **CTA link** (automatically links to blog index, portfolio, or other available pages)
+
+**Body Content:**
 - **Welcome message** with Wagtail introduction
-- **Random image embed** (if images are available in the media library)
+- **Image embed** (different from hero image when possible)
 - **Getting started guide** with admin links
 - **Feature overview** of the starter kit
 - **Next steps** for development
@@ -149,22 +157,35 @@ The generated content includes:
 ### Command Usage
 
 ```bash
-# Basic usage (populates empty home page)
-python manage.py populate_homepage
+# Basic usage (populates empty home page with default hero content)
+docker exec -it wagtail-starter-kit-app-1 python manage.py populate_homepage
 
 # Overwrite existing content
-python manage.py populate_homepage --overwrite
+docker exec -it wagtail-starter-kit-app-1 python manage.py populate_homepage --overwrite
+
+# Custom hero text and call-to-action
+docker exec -it wagtail-starter-kit-app-1 python manage.py populate_homepage \
+  --hero-text "Welcome to My Amazing Site" \
+  --hero-cta "Start Exploring"
+
+# Complete customization with overwrite
+docker exec -it wagtail-starter-kit-app-1 python manage.py populate_homepage \
+  --overwrite \
+  --hero-text "Your Custom Message Here" \
+  --hero-cta "Get Started Today"
 ```
 
 ### Command Options
 
-| Option | Description |
-|--------|-------------|
-| `--overwrite` | Overwrite existing body content if it already exists |
+| Option | Type | Default | Description |
+|--------|------|---------|-------------|
+| `--overwrite` | Flag | False | Overwrite existing content if it already exists |
+| `--hero-text` | String | "Welcome to Your Amazing Wagtail Site" | Custom hero text to display |
+| `--hero-cta` | String | "Explore Our Content" | Custom call-to-action button text |
 
 ### Command Examples
 
-#### Populate empty home page
+#### Populate empty home page with defaults
 ```bash
 docker exec -it wagtail-starter-kit-app-1 python manage.py populate_homepage
 ```
@@ -172,6 +193,21 @@ docker exec -it wagtail-starter-kit-app-1 python manage.py populate_homepage
 #### Replace existing content
 ```bash
 docker exec -it wagtail-starter-kit-app-1 python manage.py populate_homepage --overwrite
+```
+
+#### Custom hero content for branding
+```bash
+docker exec -it wagtail-starter-kit-app-1 python manage.py populate_homepage \
+  --hero-text "Welcome to ACME Corporation" \
+  --hero-cta "Discover Our Solutions"
+```
+
+#### Complete setup with custom content
+```bash
+docker exec -it wagtail-starter-kit-app-1 python manage.py populate_homepage \
+  --overwrite \
+  --hero-text "Your Business, Elevated" \
+  --hero-cta "Get Started Today"
 ```
 
 ---
