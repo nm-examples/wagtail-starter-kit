@@ -199,23 +199,23 @@ This command is useful for:
 
 ```bash
 # Basic usage (uses default Wagtail/Torchbox URLs and copyright notice)
-python manage.py populate_settings
+docker exec -it wagtail-starter-kit-app-1 python manage.py populate_settings
 
 # Custom social media URLs
-python manage.py populate_settings \
+docker exec -it wagtail-starter-kit-app-1 python manage.py populate_settings \
   --linkedin "https://www.linkedin.com/company/yourcompany" \
   --github "https://github.com/yourorganization" \
   --mastodon "https://mastodon.social/@youraccount"
 
 # Custom footer text with HTML
-python manage.py populate_settings \
+docker exec -it wagtail-starter-kit-app-1 python manage.py populate_settings \
   --footer-text "<p>&copy; 2024 Your Company. All rights reserved. Built with <a href='https://wagtail.org/'>Wagtail</a>.</p>"
 
 # Overwrite existing settings
-python manage.py populate_settings --overwrite
+docker exec -it wagtail-starter-kit-app-1 python manage.py populate_settings --overwrite
 
 # Full customization
-python manage.py populate_settings \
+docker exec -it wagtail-starter-kit-app-1 python manage.py populate_settings \
   --overwrite \
   --linkedin "https://www.linkedin.com/company/mycompany" \
   --github "https://github.com/mycompany" \
