@@ -64,6 +64,8 @@ class Command(BaseCommand):
             # Clear existing content if requested
             if options["clear"]:
                 self.clear_blog_content()
+                self.clear_authors()
+                self.clear_tags()
                 # Refresh home page from database after clearing content
                 home_page.refresh_from_db()
 
@@ -91,13 +93,8 @@ class Command(BaseCommand):
 
     def clear_blog_content(self):
         """Clear existing blog content"""
-        # Delete blog posts first (children)
-        blog_posts = BlogPage.objects.all()
-        for post in blog_posts:
-            post.delete()
-        self.stdout.write("Cleared existing blog posts")
 
-        # Then delete the index pages
+        # Then delete the index pages, children also deleted
         blog_indices = BlogIndexPage.objects.all()
         for index in blog_indices:
             index.delete()
@@ -112,6 +109,11 @@ class Command(BaseCommand):
         """Clear all authors"""
         Author.objects.all().delete()
         self.stdout.write("Cleared all authors")
+
+    def clear_tags(self):
+        """Clear all blog tags"""
+        BlogPage.tags.through.objects.all().delete()
+        self.stdout.write("Cleared all blog tags")
 
     def create_blog_index(self, home_page):
         """Create or get the blog index page"""
@@ -243,39 +245,19 @@ class Command(BaseCommand):
             # Select random tags (2-4 tags per post)
             post_tags = random.sample(blog_tags, k=random.randint(2, 4))
 
-            # Generate unique title and slug using date and random number
-            random_suffix = random.randint(100, 999)
+            # Generate unique title
             unique_title = f"{topic} - {post_date.strftime('%B %Y')} Edition"
-            base_slug = topic.lower().replace(" ", "-").replace("'", "")
-            unique_slug = f"{base_slug}-{post_date.strftime('%Y%m%d')}-{random_suffix}"
-
-            # Ensure slug uniqueness by checking existing slugs
-            existing_slugs = BlogPage.objects.filter(
-                slug__startswith=base_slug
-            ).values_list("slug", flat=True)
-
-            counter = 1
-            original_slug = unique_slug
-            while unique_slug in existing_slugs:
-                unique_slug = f"{original_slug}-{counter}"
-                counter += 1
-
             intro = self.generate_intro(topic)
             body = self.generate_body(topic)
 
-            # Create the blog post using create method instead of manual instantiation
             blog_post = blog_index.add_child(
                 instance=BlogPage(
                     title=unique_title,
-                    slug=unique_slug,
                     date=post_date,
                     intro=intro,
                     body=body,
                 )
             )
-
-            # Publish the page
-            blog_post.save_revision().publish()
 
             # Add authors
             blog_post.authors.set(post_authors)
@@ -286,7 +268,7 @@ class Command(BaseCommand):
 
             # Add gallery images (0-3 images per post)
             if available_images:
-                num_images = random.randint(0, min(3, len(available_images)))
+                num_images = random.randint(1, min(6, len(available_images)))
                 selected_images = random.sample(available_images, k=num_images)
 
                 for idx, image in enumerate(selected_images):
@@ -296,7 +278,8 @@ class Command(BaseCommand):
                         caption=f"Image {idx + 1} for {blog_post.title}",
                     )
 
-            blog_post.save()
+            revision = blog_post.save_revision()
+            revision.publish()
 
         self.stdout.write(f"Created {num_posts} blog posts")
 
