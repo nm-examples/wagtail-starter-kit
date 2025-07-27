@@ -8,6 +8,7 @@ This document provides detailed information about the custom Django management c
 - [populate_homepage](#populate_homepage)
 - [populate_settings](#populate_settings)
 - [populate_blog](#populate_blog)
+- [populate_portfolio](#populate_portfolio)
 - [Future Commands](#future-commands)
 
 ---
@@ -411,6 +412,75 @@ docker exec -it wagtail-starter-kit-app-1 python manage.py populate_blog --posts
 #### Reset and start fresh
 ```bash
 docker exec -it wagtail-starter-kit-app-1 python manage.py populate_blog --clear --posts 12 --authors 3
+```
+
+---
+
+## populate_portfolio
+
+**Location**: `app/portfolio/management/commands/populate_portfolio.py`
+
+**Purpose**: Creates a professional portfolio page with sample content using the PortfolioStreamBlock to showcase projects, skills, and experience.
+
+### Overview
+
+The `populate_portfolio` command creates a comprehensive portfolio page with rich StreamField content including:
+
+- **Introduction Section**: Welcome heading and descriptive paragraph
+- **Skills Section**: Card-based display of technical skills and expertise areas
+- **Projects Section**: Showcase of sample projects with descriptions and images
+- **Featured Blog Posts**: Dynamically links to existing blog posts (if available)
+- **Contact Section**: Professional contact information and call-to-action
+- **Media Integration**: Automatic image selection from media library when available
+- **Menu Integration**: Automatically sets `show_in_menus=True` for navigation visibility
+
+### Command Usage
+
+```bash
+# Basic usage (creates portfolio page with default title)
+docker exec -it wagtail-starter-kit-app-1 python manage.py populate_portfolio
+
+# Custom title
+docker exec -it wagtail-starter-kit-app-1 python manage.py populate_portfolio --title "My Work"
+
+# Overwrite existing portfolio page
+docker exec -it wagtail-starter-kit-app-1 python manage.py populate_portfolio --overwrite
+
+# Complete customization with overwrite
+docker exec -it wagtail-starter-kit-app-1 python manage.py populate_portfolio \
+  --overwrite \
+  --title "Professional Portfolio"
+```
+
+### Command Options
+
+| Option | Type | Default | Description |
+|--------|------|---------|-------------|
+| `--overwrite` | Flag | False | Delete existing portfolio page and create a new one |
+| `--title` | String | "Portfolio" | Custom title for the portfolio page |
+
+### Command Examples
+
+#### Basic portfolio setup
+```bash
+docker exec -it wagtail-starter-kit-app-1 python manage.py populate_portfolio
+```
+
+#### Custom branding
+```bash
+docker exec -it wagtail-starter-kit-app-1 python manage.py populate_portfolio --title "My Creative Work"
+```
+
+#### Replace existing portfolio
+```bash
+docker exec -it wagtail-starter-kit-app-1 python manage.py populate_portfolio --overwrite --title "Updated Portfolio"
+```
+
+#### Professional setup
+```bash
+docker exec -it wagtail-starter-kit-app-1 python manage.py populate_portfolio \
+  --title "Professional Experience" \
+  --overwrite
 ```
 
 ---
