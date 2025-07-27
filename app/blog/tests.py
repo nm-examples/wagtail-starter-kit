@@ -84,10 +84,10 @@ class PopulateBlogTestCase(TestCase):
 
         # Check that clear messages appeared
         output = out.getvalue()
-        self.assertIn("Cleared existing blog posts", output)
         self.assertIn("Cleared existing blog index pages", output)
         self.assertIn("Cleared existing blog tag pages", output)
-        # Note: Authors are not cleared by default to preserve them across runs
+        self.assertIn("Cleared all authors", output)
+        self.assertIn("Cleared all blog tags", output)
 
     def test_blog_post_structure(self):
         """Test that blog posts have proper structure and relationships"""
