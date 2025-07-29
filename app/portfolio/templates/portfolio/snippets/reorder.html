@@ -1,0 +1,144 @@
+{% extends "wagtailadmin/base.html" %}
+{% load static wagtailadmin_tags %}
+
+{% block titletag %}Reorder Developer Skills{% endblock %}
+
+{% block extra_css %}
+    {{ block.super }}
+    <style>
+        .orderable-item {
+            background: white;
+            border: 1px solid #ddd;
+            margin-bottom: 5px;
+            padding: 10px;
+            cursor: move;
+            border-radius: 3px;
+        }
+
+        .orderable-item:hover {
+            background: #f5f5f5;
+        }
+
+        .orderable-item.ui-sortable-helper {
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
+
+        .drag-handle {
+            color: #999;
+            margin-right: 10px;
+            cursor: move;
+        }
+
+        .skill-info {
+            display: inline-block;
+        }
+
+        .skill-level {
+            color: #666;
+            font-size: 0.9em;
+            margin-left: 10px;
+        }
+
+        .save-order {
+            margin-top: 20px;
+        }
+
+        .sortable-placeholder {
+            background: #f0f0f0;
+            border: 2px dashed #ccc;
+            margin-bottom: 5px;
+            height: 50px;
+            border-radius: 3px;
+            position: relative;
+        }
+
+        .sortable-placeholder:before {
+            content: "Drop here";
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: #999;
+            font-size: 0.9em;
+        }
+    </style>
+{% endblock %}
+
+{% block extra_js %}
+    {{ block.super }}
+    <script src="{% static 'wagtailadmin/js/vendor/jquery-3.5.1.min.js' %}"></script>
+    <script src="{% static 'wagtailadmin/js/vendor/jquery-ui-1.12.1.min.js' %}"></script>
+    <script>
+        $(document).ready(function() {
+            $('#sortable-skills').sortable({
+                placeholder: 'sortable-placeholder',
+                axis: 'y',
+                tolerance: 'pointer',
+                helper: 'clone',
+                forcePlaceholderSize: true,
+                opacity: 0.8,
+                start: function(event, ui) {
+                    ui.placeholder.height(ui.item.outerHeight());
+                },
+                update: function(event, ui) {
+                    // Enable save button when order changes
+                    $('#save-order-btn').prop('disabled', false);
+                }
+            });
+
+            $('#save-order-btn').click(function() {
+                var skillIds = [];
+                $('#sortable-skills .orderable-item').each(function() {
+                    skillIds.push($(this).data('skill-id'));
+                });
+
+                // Here you would send the new order to the server
+                // This is a placeholder - you'd need to implement the actual save functionality
+                console.log('New order:', skillIds);
+                alert('Order saved! (This is a demo - implement actual save functionality)');
+                $(this).prop('disabled', true);
+            });
+        });
+    </script>
+{% endblock %}
+
+{% block content %}
+    {% include "wagtailadmin/shared/header.html" with title="Reorder Developer Skills" icon="list-ul" %}
+
+    <div class="nice-padding">
+        <div class="help-block">
+            <p>Drag and drop to reorder the developer skills. Click "Save Order" when finished.</p>
+        </div>
+
+        <div id="sortable-skills">
+            <!-- This would be populated with actual skill data from the view -->
+            <!-- For now, showing placeholder structure -->
+            <div class="orderable-item" data-skill-id="1">
+                <span class="drag-handle">&#8942;&#8942;</span>
+                <div class="skill-info">
+                    <strong>Python</strong>
+                    <span class="skill-level">(Advanced)</span>
+                </div>
+            </div>
+            <div class="orderable-item" data-skill-id="2">
+                <span class="drag-handle">&#8942;&#8942;</span>
+                <div class="skill-info">
+                    <strong>JavaScript</strong>
+                    <span class="skill-level">(Intermediate)</span>
+                </div>
+            </div>
+            <div class="orderable-item" data-skill-id="3">
+                <span class="drag-handle">&#8942;&#8942;</span>
+                <div class="skill-info">
+                    <strong>Django</strong>
+                    <span class="skill-level">(Advanced)</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="save-order">
+            <button id="save-order-btn" class="button" disabled>Save Order</button>
+            <a href="{% url 'wagtailadmin_home' %}" class="button button-secondary">Cancel</a>
+        </div>
+    </div>
+{% endblock %}
