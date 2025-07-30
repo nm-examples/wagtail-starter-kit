@@ -1,7 +1,10 @@
 from django.shortcuts import render
-from django.urls import path
+from django.urls import path, reverse
+from wagtail import hooks
+from wagtail.admin.widgets.button import ButtonWithDropdown
 from wagtail.snippets.models import register_snippet
 from wagtail.snippets.views.snippets import SnippetViewSet
+from wagtail.snippets import widgets as wagtailsnippets_widgets
 
 from app.portfolio.models import DeveloperSkill
 
@@ -44,8 +47,20 @@ class DeveloperSkillViewSet(SnippetViewSet):
         skills = DeveloperSkill.objects.all().order_by("sort_order")
         context = {
             "object_list": skills,
+            "view": self,
+            "model_verbose_name_plural": DeveloperSkill._meta.verbose_name_plural,
+            "model_verbose_name": DeveloperSkill._meta.verbose_name,
         }
         return render(request, "portfolio/snippets/reorder.html", context)
 
 
 register_snippet(DeveloperSkillViewSet)
+
+
+@hooks.register('register_snippet_listing_buttons')
+def snippet_listing_buttons(DeveloperSkill, user, next_url=None):
+    yield wagtailsnippets_widgets.SnippetListingButton(
+        'A page listing button',
+        '/goes/to/a/url/',
+        priority=10
+    )

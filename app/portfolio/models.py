@@ -60,3 +60,5 @@ class DeveloperSkill(OrderableIncrementingModel):
 
     class Meta:
         ordering = ("name",)
+        verbose_name = "Developer Skill"
+        verbose_name_plural = "Developer Skills"

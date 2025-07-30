@@ -1,60 +1,46 @@
 {% extends "wagtailadmin/base.html" %}
 {% load static i18n wagtailadmin_tags %}
 
-{% block titletag %}{% trans "Reorder Developer Skills" %} - {{ block.super }}{% endblock %}
+{% block titletag %}{% trans "Reorder" %} {{ model_verbose_name_plural }} - {{ block.super }}{% endblock %}
 
 {% block content %}
-    {% include "wagtailadmin/shared/header.html" with title="Reorder Developer Skills" icon="list-ul" %}
+    {% include "wagtailadmin/shared/header.html" with title="Reorder "|add:model_verbose_name_plural icon="list-ul" %}
 
     <div class="nice-padding">
         {% if object_list %}
             <div class="help-block help-info">
                 <svg class="icon icon-help icon" aria-hidden="true"><use href="#icon-help"></use></svg>
-                <p>{% trans "Drag and drop the skills below to change their order. Changes are saved automatically." %}</p>
+                <p>{% trans "Drag and drop a" %} {{ model_verbose_name|lower }} {% trans "below to change it's order. Changes are saved automatically." %}</p>
             </div>
 
             <div id="save-status" style="display: none;"></div>
 
             <div class="listing">
-                <table class="listing__table" id="developerskill-table">
-                    <thead>
-                        <tr class="table-headers">
-                            <th class="ord">{% trans "Order" %}</th>
-                            <th>{% trans "Name" %}</th>
-                            <th>{% trans "Level" %}</th>
-                        </tr>
-                    </thead>
-                    <tbody id="sortable-tbody">
-                        {% for skill in object_list %}
-                        <tr class="listing__item" data-id="{{ skill.id }}">
-                            <td class="ord">
-                                <div class="listing__item__drag-handle drag-handle" style="cursor: grab;">
-                                    {% icon name="grip" %}
-                                </div>
-                            </td>
-                            <td class="title">
-                                <h2>{{ skill.name }}</h2>
-                            </td>
-                            <td>
-                                <span class="status-tag primary">{{ skill.get_level_display }}</span>
-                            </td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
+                <ul class="listing__list" id="developerskill-list">
+                    {% for skill in object_list %}
+                    <li class="listing__item" data-id="{{ skill.id }}">
+                        <div class="listing__item__drag-handle drag-handle" style="cursor: grab;">
+                            {% icon name="grip" %}
+                        </div>
+                        <div class="listing__item__content">
+                            <h2 class="listing__item__title">{{ skill.name }}</h2>
+                        </div>
+                    </li>
+                    {% endfor %}
+                </ul>
             </div>
 
             <div class="action-buttons">
                 <a href="{% url 'wagtailsnippets_portfolio_developerskill:list' %}" class="button button-secondary button--icon">
                     {% icon name="arrow-left" %}
-                    {% trans "Back to Skills" %}
+                    {% trans "Back to" %} {{ model_verbose_name_plural }}
                 </a>
             </div>
         {% else %}
             <div class="nice-padding">
-                <p>{% trans "No developer skills found." %}</p>
+                <p>{% trans "No" %} {{ model_verbose_name_plural|lower }} {% trans "found." %}</p>
                 <a href="{% url 'wagtailsnippets_portfolio_developerskill:list' %}" class="button button-secondary">
-                    {% trans "Back to Skills" %}
+                    {% trans "Back to" %} {{ model_verbose_name_plural }}
                 </a>
             </div>
         {% endif %}
@@ -63,7 +49,7 @@
     import Sortable from "https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/+esm";
 
     document.addEventListener('DOMContentLoaded', function() {
-      const tbody = document.getElementById('sortable-tbody');
+      const skillList = document.getElementById('developerskill-list');
       const saveStatus = document.getElementById('save-status');
       let isSaving = false;
 
@@ -89,9 +75,9 @@
       function saveOrder() {
         if (isSaving) return; // Prevent multiple simultaneous saves
         
-        const rows = tbody.querySelectorAll("tr");
-        const order = Array.from(rows).map((row, idx) => ({
-          id: row.getAttribute("data-id"),
+        const items = skillList.querySelectorAll("li");
+        const order = Array.from(items).map((item, idx) => ({
+          id: item.getAttribute("data-id"),
           sort_order: idx + 1
         }));
 
@@ -124,7 +110,7 @@
       }
 
       // Initialize Sortable with auto-save on end
-      const sortable = Sortable.create(tbody, {
+      const sortable = Sortable.create(skillList, {
         handle: ".listing__item__drag-handle",
         animation: 150,
         ghostClass: "sortable-ghost",
@@ -149,14 +135,9 @@
             justify-content: center;
             opacity: 0.6;
             transition: opacity 0.2s ease;
-            width: 100%;
-            height: 100%;
-            min-height: 50px;
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
+            width: 40px;
+            height: 40px;
+            flex-shrink: 0;
         }
 
         .listing__item__drag-handle svg {
@@ -193,60 +174,53 @@
             align-items: center;
         }
 
-        .status-tag {
-            padding: 0.25rem 0.5rem;
-            border-radius: 4px;
-            font-size: 0.875rem;
-            font-weight: 500;
-            text-transform: capitalize;
-        }
-
-        .status-tag.primary {
-            background-color: #007cba;
-            color: white;
-        }
-
-        .listing__table th.ord,
-        .listing__table td.ord {
-            width: 60px;
-            text-align: center;
+        .listing__list {
+            list-style: none;
+            margin: 0;
             padding: 0;
-            position: relative;
         }
 
-        .listing__table td.title h2 {
+        .listing__item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 0.25rem;
+            border: 1px solid #e1e5e9;
+            border-radius: 4px;
+            margin-bottom: 0.25rem;
+            background: white;
+            transition: all 0.2s ease;
+        }
+
+        .listing__item:hover {
+            border-color: #007cba;
+            box-shadow: 0 2px 4px rgba(0, 123, 186, 0.1);
+        }
+
+        .listing__item__content {
+            flex: 1;
+            display: flex;
+            align-items: center;
+        }
+
+        .listing__item__title {
             margin: 0;
             font-size: 1rem;
             font-weight: 600;
+            color: #333;
         }
 
         .listing {
             width: 100%;
         }
 
-        .listing__table {
-            width: 100%;
-            table-layout: fixed;
-        }
-
-        .listing__table th,
-        .listing__table td {
-            padding: 1rem 0.75rem;
-        }
-
-        .listing__table th:nth-child(2),
-        .listing__table td:nth-child(2) {
-            width: 50%;
-        }
-
-        .listing__table th:nth-child(3),
-        .listing__table td:nth-child(3) {
-            width: calc(50% - 60px);
-        }
-
         /* Success message styling based on help-block help-info */
         #save-status .messages {
-            margin-bottom: 1.5rem;
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
+            margin-bottom: 0;
         }
 
         #save-status .message {
@@ -256,6 +230,8 @@
             padding: 1rem;
             border-radius: 4px;
             margin: 0;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+            min-width: 200px;
         }
 
         #save-status .message.success {
