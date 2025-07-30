@@ -8,9 +8,12 @@
 
     <div class="nice-padding">
         {% if object_list %}
-            <div class="help-block">
+            <div class="help-block help-info">
+                <svg class="icon icon-help icon" aria-hidden="true"><use href="#icon-help"></use></svg>
                 <p>{% trans "Drag and drop the skills below to change their order. Changes are saved automatically." %}</p>
             </div>
+
+            <div id="save-status" style="display: none;"></div>
 
             <div class="listing">
                 <table class="listing__table" id="developerskill-table">
@@ -61,7 +64,26 @@
 
     document.addEventListener('DOMContentLoaded', function() {
       const tbody = document.getElementById('sortable-tbody');
+      const saveStatus = document.getElementById('save-status');
       let isSaving = false;
+
+      // Function to show status message
+      function showStatus(message, type) {
+        saveStatus.innerHTML = `
+          <div class="messages">
+            <div class="message ${type}">
+              <a href="#" class="icon icon-${type === 'success' ? 'success' : 'warning'}"></a>
+              <p>${message}</p>
+            </div>
+          </div>
+        `;
+        saveStatus.style.display = 'block';
+        
+        // Hide after 3 seconds
+        setTimeout(() => {
+          saveStatus.style.display = 'none';
+        }, 3000);
+      }
 
       // Function to save the order
       function saveOrder() {
@@ -86,93 +108,15 @@
         .then(response => response.json())
         .then(data => {
           if (data.success) {
-            // Show brief success indicator
-            const successIndicator = document.createElement('div');
-            successIndicator.className = 'save-success-indicator';
-            successIndicator.innerHTML = '<span class="icon icon-success"></span> Order saved';
-            successIndicator.style.cssText = `
-              position: fixed;
-              top: 20px;
-              right: 20px;
-              background: #28a745;
-              color: white;
-              padding: 0.5rem 1rem;
-              border-radius: 4px;
-              z-index: 1000;
-              font-size: 0.875rem;
-              display: flex;
-              align-items: center;
-              gap: 0.5rem;
-              box-shadow: 0 2px 8px rgba(0,0,0,0.2);
-            `;
-            document.body.appendChild(successIndicator);
-            
-            // Remove indicator after 2 seconds
-            setTimeout(() => {
-              if (successIndicator.parentNode) {
-                successIndicator.parentNode.removeChild(successIndicator);
-              }
-            }, 2000);
+            showStatus("Order saved successfully", "success");
           } else {
             console.error("Error saving order:", data.error || "Unknown error");
-            // Show error indicator
-            const errorIndicator = document.createElement('div');
-            errorIndicator.className = 'save-error-indicator';
-            errorIndicator.innerHTML = '<span class="icon icon-warning"></span> Error saving order';
-            errorIndicator.style.cssText = `
-              position: fixed;
-              top: 20px;
-              right: 20px;
-              background: #dc3545;
-              color: white;
-              padding: 0.5rem 1rem;
-              border-radius: 4px;
-              z-index: 1000;
-              font-size: 0.875rem;
-              display: flex;
-              align-items: center;
-              gap: 0.5rem;
-              box-shadow: 0 2px 8px rgba(0,0,0,0.2);
-            `;
-            document.body.appendChild(errorIndicator);
-            
-            // Remove indicator after 3 seconds
-            setTimeout(() => {
-              if (errorIndicator.parentNode) {
-                errorIndicator.parentNode.removeChild(errorIndicator);
-              }
-            }, 3000);
+            showStatus("Error saving order: " + (data.error || "Unknown error"), "error");
           }
         })
         .catch(error => {
           console.error('Error:', error);
-          // Show error indicator
-          const errorIndicator = document.createElement('div');
-          errorIndicator.className = 'save-error-indicator';
-          errorIndicator.innerHTML = '<span class="icon icon-warning"></span> Error saving order';
-          errorIndicator.style.cssText = `
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            background: #dc3545;
-            color: white;
-            padding: 0.5rem 1rem;
-            border-radius: 4px;
-            z-index: 1000;
-            font-size: 0.875rem;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
-          `;
-          document.body.appendChild(errorIndicator);
-          
-          // Remove indicator after 3 seconds
-          setTimeout(() => {
-            if (errorIndicator.parentNode) {
-              errorIndicator.parentNode.removeChild(errorIndicator);
-            }
-          }, 3000);
+          showStatus("Error saving order", "error");
         })
         .finally(() => {
           isSaving = false;
@@ -249,19 +193,6 @@
             align-items: center;
         }
 
-        .help-block {
-            margin-bottom: 1.5rem;
-            padding: 1rem;
-            background-color: #f8f9fa;
-            border-left: 4px solid #007cba;
-            border-radius: 4px;
-        }
-
-        .help-block p {
-            margin: 0;
-            color: #666;
-        }
-
         .status-tag {
             padding: 0.25rem 0.5rem;
             border-radius: 4px;
@@ -311,6 +242,42 @@
         .listing__table th:nth-child(3),
         .listing__table td:nth-child(3) {
             width: calc(50% - 60px);
+        }
+
+        /* Success message styling based on help-block help-info */
+        #save-status .messages {
+            margin-bottom: 1.5rem;
+        }
+
+        #save-status .message {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.75rem;
+            padding: 1rem;
+            border-radius: 4px;
+            margin: 0;
+        }
+
+        #save-status .message.success {
+            background-color: #d4edda;
+            border-left: 4px solid #28a745;
+            color: #155724;
+        }
+
+        #save-status .message.error {
+            background-color: #f8d7da;
+            border-left: 4px solid #dc3545;
+            color: #721c24;
+        }
+
+        #save-status .message a {
+            flex-shrink: 0;
+            margin-top: 0.125rem;
+        }
+
+        #save-status .message p {
+            margin: 0;
+            flex: 1;
         }
     </style>
 {% endblock %}
