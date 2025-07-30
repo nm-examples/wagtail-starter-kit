@@ -1,0 +1,37 @@
+{% extends "wagtailsnippets/snippets/index.html" %}
+{% load i18n wagtailadmin_tags %}
+
+{% block header_extra %}
+    {{ block.super }}
+    <div class="header-button-wrapper">
+        {% url 'wagtailsnippets_portfolio_developerskill:reorder' as reorder_url %}
+        {% if reorder_url %}
+            <a href="{{ reorder_url }}" class="button bicolor button--icon">
+                {% icon name="list-ul" %}
+                {% trans "Reorder Skills" %}
+            </a>
+        {% else %}
+            {# Fallback to hardcoded URL if named URL doesn't work #}
+            <a href="/admin/snippets/portfolio/developerskill/reorder/" class="button bicolor button--icon">
+                {% icon name="list-ul" %}
+                {% trans "Reorder Skills" %}
+            </a>
+        {% endif %}
+    </div>
+{% endblock %}
+
+{% block extra_css %}
+    {{ block.super }}
+    <style>
+        .header-button-wrapper {
+            display: inline-block;
+            margin-left: 1rem;
+        }
+
+        .header-button-wrapper .button {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+    </style>
+{% endblock %}
