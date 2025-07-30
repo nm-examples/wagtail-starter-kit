@@ -9,7 +9,7 @@
     <div class="nice-padding">
         {% if object_list %}
             <div class="help-block">
-                <p>{% trans "Drag and drop the skills below to change their order. Click 'Save Order' when you're finished." %}</p>
+                <p>{% trans "Drag and drop the skills below to change their order. Changes are saved automatically." %}</p>
             </div>
 
             <div class="listing">
@@ -42,10 +42,6 @@
             </div>
 
             <div class="action-buttons">
-                <button type="button" id="save-order-btn" class="button button-longrunning bicolor button--icon">
-                    {% icon name="order" %}
-                    {% trans "Save Order" %}
-                </button>
                 <a href="{% url 'wagtailsnippets_portfolio_developerskill:list' %}" class="button button-secondary button--icon">
                     {% icon name="arrow-left" %}
                     {% trans "Back to Skills" %}
@@ -65,28 +61,19 @@
 
     document.addEventListener('DOMContentLoaded', function() {
       const tbody = document.getElementById('sortable-tbody');
-      const saveBtn = document.getElementById('save-order-btn');
+      let isSaving = false;
 
-      // Initialize Sortable
-      const sortable = Sortable.create(tbody, {
-        handle: ".listing__item__drag-handle",
-        animation: 150,
-        ghostClass: "sortable-ghost",
-        chosenClass: "sortable-chosen",
-        dragClass: "sortable-drag"
-      });
-
-      // Handle save button click
-      saveBtn.addEventListener('click', function() {
+      // Function to save the order
+      function saveOrder() {
+        if (isSaving) return; // Prevent multiple simultaneous saves
+        
         const rows = tbody.querySelectorAll("tr");
         const order = Array.from(rows).map((row, idx) => ({
           id: row.getAttribute("data-id"),
           sort_order: idx + 1
         }));
 
-        // Disable button during save
-        saveBtn.disabled = true;
-        saveBtn.innerHTML = '<span class="icon icon-spinner"></span> Saving...';
+        isSaving = true;
 
         fetch("{% url 'wagtailsnippets_portfolio_developerskill:reorder' %}", {
           method: "POST",
@@ -99,23 +86,110 @@
         .then(response => response.json())
         .then(data => {
           if (data.success) {
-            // Show success message briefly before reload
-            saveBtn.innerHTML = '<span class="icon icon-success"></span> Saved!';
+            // Show brief success indicator
+            const successIndicator = document.createElement('div');
+            successIndicator.className = 'save-success-indicator';
+            successIndicator.innerHTML = '<span class="icon icon-success"></span> Order saved';
+            successIndicator.style.cssText = `
+              position: fixed;
+              top: 20px;
+              right: 20px;
+              background: #28a745;
+              color: white;
+              padding: 0.5rem 1rem;
+              border-radius: 4px;
+              z-index: 1000;
+              font-size: 0.875rem;
+              display: flex;
+              align-items: center;
+              gap: 0.5rem;
+              box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+            `;
+            document.body.appendChild(successIndicator);
+            
+            // Remove indicator after 2 seconds
             setTimeout(() => {
-              location.reload();
-            }, 1000);
+              if (successIndicator.parentNode) {
+                successIndicator.parentNode.removeChild(successIndicator);
+              }
+            }, 2000);
           } else {
-            alert("Error saving order: " + (data.error || "Unknown error"));
-            saveBtn.disabled = false;
-            saveBtn.innerHTML = '<span class="icon icon-order"></span> Save Order';
+            console.error("Error saving order:", data.error || "Unknown error");
+            // Show error indicator
+            const errorIndicator = document.createElement('div');
+            errorIndicator.className = 'save-error-indicator';
+            errorIndicator.innerHTML = '<span class="icon icon-warning"></span> Error saving order';
+            errorIndicator.style.cssText = `
+              position: fixed;
+              top: 20px;
+              right: 20px;
+              background: #dc3545;
+              color: white;
+              padding: 0.5rem 1rem;
+              border-radius: 4px;
+              z-index: 1000;
+              font-size: 0.875rem;
+              display: flex;
+              align-items: center;
+              gap: 0.5rem;
+              box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+            `;
+            document.body.appendChild(errorIndicator);
+            
+            // Remove indicator after 3 seconds
+            setTimeout(() => {
+              if (errorIndicator.parentNode) {
+                errorIndicator.parentNode.removeChild(errorIndicator);
+              }
+            }, 3000);
           }
         })
         .catch(error => {
           console.error('Error:', error);
-          alert("Error saving order");
-          saveBtn.disabled = false;
-          saveBtn.innerHTML = '<span class="icon icon-order"></span> Save Order';
+          // Show error indicator
+          const errorIndicator = document.createElement('div');
+          errorIndicator.className = 'save-error-indicator';
+          errorIndicator.innerHTML = '<span class="icon icon-warning"></span> Error saving order';
+          errorIndicator.style.cssText = `
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: #dc3545;
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            z-index: 1000;
+            font-size: 0.875rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+          `;
+          document.body.appendChild(errorIndicator);
+          
+          // Remove indicator after 3 seconds
+          setTimeout(() => {
+            if (errorIndicator.parentNode) {
+              errorIndicator.parentNode.removeChild(errorIndicator);
+            }
+          }, 3000);
+        })
+        .finally(() => {
+          isSaving = false;
         });
+      }
+
+      // Initialize Sortable with auto-save on end
+      const sortable = Sortable.create(tbody, {
+        handle: ".listing__item__drag-handle",
+        animation: 150,
+        ghostClass: "sortable-ghost",
+        chosenClass: "sortable-chosen",
+        dragClass: "sortable-drag",
+        onEnd: function() {
+          // Auto-save when drag ends
+          saveOrder();
+        }
       });
     });
   </script>
