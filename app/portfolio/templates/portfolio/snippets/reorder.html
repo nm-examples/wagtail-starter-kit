@@ -126,8 +126,16 @@
 
         if (position === 'first') {
           skillList.insertBefore(item, skillList.firstChild);
+          // Scroll to top of the list
+          setTimeout(() => {
+            skillList.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          }, 100);
         } else if (position === 'last') {
           skillList.appendChild(item);
+          // Scroll to bottom of the list
+          setTimeout(() => {
+            skillList.scrollIntoView({ behavior: 'smooth', block: 'end' });
+          }, 100);
         }
 
         // Save the new order
