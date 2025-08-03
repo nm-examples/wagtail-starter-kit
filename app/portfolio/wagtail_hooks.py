@@ -13,7 +13,7 @@ class DeveloperSkillViewSet(SnippetViewSet):
     """ViewSet for managing DeveloperSkill snippets."""
 
     model = DeveloperSkill
-    list_display = ("name", "level")
+    list_display = ("name", "level", "sort_order")
     search_fields = ("name", "level")
     list_filter = ("level",)
     ordering = ("name",)

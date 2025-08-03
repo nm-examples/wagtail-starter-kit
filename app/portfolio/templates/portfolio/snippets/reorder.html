@@ -26,11 +26,11 @@
                             <h2 class="listing__item__title">{{ skill.name }}</h2>
                           </div>
                           <div class="listing__item__actions">
-                            <a href="#" class="button button-small button--icon button-secondary">
+                            <a href="#" class="button button-small button--icon button-secondary move-first" data-id="{{ skill.id }}">
                               <span class="icon-wrapper"><svg class="icon icon-arrow-up icon" aria-hidden="true"><use href="#icon-arrow-up"></use></svg></span>
                               Move First
                             </a>
-                            <a href="#" class="button button-small button--icon button-secondary">
+                            <a href="#" class="button button-small button--icon button-secondary move-last" data-id="{{ skill.id }}">
                               <span class="icon-wrapper"><svg class="icon icon-arrow-down icon" aria-hidden="true"><use href="#icon-arrow-down"></use></svg></span>
                               Move Last
                             </a>
@@ -118,6 +118,34 @@
           isSaving = false;
         });
       }
+
+      // Function to move item to specific position
+      function moveItem(itemId, position) {
+        const item = skillList.querySelector(`li[data-id="${itemId}"]`);
+        if (!item) return;
+
+        if (position === 'first') {
+          skillList.insertBefore(item, skillList.firstChild);
+        } else if (position === 'last') {
+          skillList.appendChild(item);
+        }
+
+        // Save the new order
+        saveOrder();
+      }
+
+      // Add event listeners for Move First/Last buttons
+      skillList.addEventListener('click', function(e) {
+        e.preventDefault();
+
+        if (e.target.closest('.move-first')) {
+          const itemId = e.target.closest('.move-first').getAttribute('data-id');
+          moveItem(itemId, 'first');
+        } else if (e.target.closest('.move-last')) {
+          const itemId = e.target.closest('.move-last').getAttribute('data-id');
+          moveItem(itemId, 'last');
+        }
+      });
 
       // Initialize Sortable with auto-save on end
       const sortable = Sortable.create(skillList, {
