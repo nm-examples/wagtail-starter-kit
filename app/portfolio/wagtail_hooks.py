@@ -1,10 +1,10 @@
+import json
+
+from django.http import JsonResponse
 from django.shortcuts import render
-from django.urls import path, reverse
-from wagtail import hooks
-from wagtail.admin.widgets.button import ButtonWithDropdown
+from django.urls import path
 from wagtail.snippets.models import register_snippet
 from wagtail.snippets.views.snippets import SnippetViewSet
-from wagtail.snippets import widgets as wagtailsnippets_widgets
 
 from app.portfolio.models import DeveloperSkill
 
@@ -13,10 +13,12 @@ class DeveloperSkillViewSet(SnippetViewSet):
     """ViewSet for managing DeveloperSkill snippets."""
 
     model = DeveloperSkill
-    list_display = ("name", "level", "sort_order")
+    list_display = ("name", "level")
     search_fields = ("name", "level")
     list_filter = ("level",)
     ordering = ("name",)
+
+    index_template_name = "portfolio/snippets/developer_skill_index.html"
 
     def get_urlpatterns(self):
         return super().get_urlpatterns() + [
@@ -26,9 +28,6 @@ class DeveloperSkillViewSet(SnippetViewSet):
     def reorder_view(self, request):
         if request.method == "POST":
             # Handle the AJAX save request
-            import json
-
-            from django.http import JsonResponse
 
             try:
                 data = json.loads(request.body)
@@ -55,12 +54,3 @@ class DeveloperSkillViewSet(SnippetViewSet):
 
 
 register_snippet(DeveloperSkillViewSet)
-
-
-@hooks.register('register_snippet_listing_buttons')
-def snippet_listing_buttons(DeveloperSkill, user, next_url=None):
-    yield wagtailsnippets_widgets.SnippetListingButton(
-        'A page listing button',
-        '/goes/to/a/url/',
-        priority=10
-    )

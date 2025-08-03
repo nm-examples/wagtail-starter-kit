@@ -4,6 +4,7 @@
 {% block titletag %}{% trans "Reorder" %} {{ model_verbose_name_plural }} - {{ block.super }}{% endblock %}
 
 {% block content %}
+    <div id="save-status" style="display: none;"></div>
     {% include "wagtailadmin/shared/header.html" with title="Reorder "|add:model_verbose_name_plural icon="list-ul" %}
 
     <div class="nice-padding">
@@ -13,7 +14,6 @@
                 <p>{% trans "Drag and drop a" %} {{ model_verbose_name|lower }} {% trans "below to change it's order. Changes are saved automatically." %}</p>
             </div>
 
-            <div id="save-status" style="display: none;"></div>
 
             <div class="listing">
                 <ul class="listing__list" id="developerskill-list">
@@ -24,7 +24,17 @@
                         </div>
                         <div class="listing__item__content">
                             <h2 class="listing__item__title">{{ skill.name }}</h2>
-                        </div>
+                          </div>
+                          <div class="listing__item__actions">
+                            <a href="#" class="button button-small button--icon button-secondary">
+                              <span class="icon-wrapper"><svg class="icon icon-arrow-up icon" aria-hidden="true"><use href="#icon-arrow-up"></use></svg></span>
+                              Move First
+                            </a>
+                            <a href="#" class="button button-small button--icon button-secondary">
+                              <span class="icon-wrapper"><svg class="icon icon-arrow-down icon" aria-hidden="true"><use href="#icon-arrow-down"></use></svg></span>
+                              Move Last
+                            </a>
+                          </div>
                     </li>
                     {% endfor %}
                 </ul>
@@ -64,7 +74,7 @@
           </div>
         `;
         saveStatus.style.display = 'block';
-        
+
         // Hide after 3 seconds
         setTimeout(() => {
           saveStatus.style.display = 'none';
@@ -74,7 +84,7 @@
       // Function to save the order
       function saveOrder() {
         if (isSaving) return; // Prevent multiple simultaneous saves
-        
+
         const items = skillList.querySelectorAll("li");
         const order = Array.from(items).map((item, idx) => ({
           id: item.getAttribute("data-id"),
@@ -192,6 +202,10 @@
             transition: all 0.2s ease;
         }
 
+        .listing__item__actions {
+            transform: translateX(-10px);
+        }
+
         .listing__item:hover {
             border-color: #007cba;
             box-shadow: 0 2px 4px rgba(0, 123, 186, 0.1);
@@ -200,7 +214,7 @@
         .listing__item__content {
             flex: 1;
             display: flex;
-            align-items: center;
+            align-items: right;
         }
 
         .listing__item__title {

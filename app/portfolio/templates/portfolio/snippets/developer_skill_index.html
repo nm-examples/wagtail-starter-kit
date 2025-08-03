@@ -1,0 +1,20 @@
+{% extends "wagtailsnippets/snippets/index.html" %}
+{% load i18n wagtailadmin_tags %}
+
+{% block titletag %}{{ model_opts.verbose_name_plural|capfirst }} - {{ block.super }}{% endblock %}
+
+{% block extra_js %}
+    {{ block.super }}
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            {% comment %} const url = "{% url 'wagtailsnippets_portfolio_developerskill:reorder' %}"; {% endcomment %}
+            const buttonContainer = document.querySelector('#w-slim-header-buttons');
+            buttonContainer.insertAdjacentHTML('beforeend', `
+                <a href="{% url 'wagtailsnippets_portfolio_developerskill:reorder' %}" class="w-header-button button">
+                <svg class="icon icon-list-ol icon" aria-hidden="true"><use href="#icon-list-ol"></use></svg>
+                {% trans "Reorder Skills" %}
+                </a>
+            `);
+        });
+    </script>
+{% endblock %}
