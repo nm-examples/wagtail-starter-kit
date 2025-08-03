@@ -5,9 +5,9 @@
 
 {% block extra_js %}
     {{ block.super }}
+    {% if object_list|length > 1 %}
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            {% comment %} const url = "{% url 'wagtailsnippets_portfolio_developerskill:reorder' %}"; {% endcomment %}
             const buttonContainer = document.querySelector('#w-slim-header-buttons');
             buttonContainer.insertAdjacentHTML('beforeend', `
                 <a href="{% url 'wagtailsnippets_portfolio_developerskill:reorder' %}" class="w-header-button button">
@@ -17,4 +17,5 @@
             `);
         });
     </script>
+    {% endif %}
 {% endblock %}

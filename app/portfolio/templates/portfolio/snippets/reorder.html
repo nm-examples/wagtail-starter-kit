@@ -45,6 +45,10 @@
                     {% icon name="arrow-left" %}
                     {% trans "Back to" %} {{ model_verbose_name_plural }}
                 </a>
+                <a href="#header-title" class="button button-secondary button--icon">
+                    {% icon name="arrow-up" %}
+                    {% trans "Back to Top" %}
+                </a>
             </div>
         {% else %}
             <div class="nice-padding">
@@ -119,6 +123,30 @@
         });
       }
 
+      // Function to update button visibility based on position
+      function updateButtonVisibility() {
+        const items = skillList.querySelectorAll("li");
+
+        items.forEach((item, index) => {
+          const moveFirstBtn = item.querySelector('.move-first');
+          const moveLastBtn = item.querySelector('.move-last');
+
+          // Hide/show Move First button
+          if (index === 0) {
+            moveFirstBtn.style.display = 'none';
+          } else {
+            moveFirstBtn.style.display = 'inline-flex';
+          }
+
+          // Hide/show Move Last button
+          if (index === items.length - 1) {
+            moveLastBtn.style.display = 'none';
+          } else {
+            moveLastBtn.style.display = 'inline-flex';
+          }
+        });
+      }
+
       // Function to move item to specific position
       function moveItem(itemId, position) {
         const item = skillList.querySelector(`li[data-id="${itemId}"]`);
@@ -137,6 +165,9 @@
             skillList.scrollIntoView({ behavior: 'smooth', block: 'end' });
           }, 100);
         }
+
+        // Update button visibility after moving
+        updateButtonVisibility();
 
         // Save the new order
         saveOrder();
@@ -163,10 +194,15 @@
         chosenClass: "sortable-chosen",
         dragClass: "sortable-drag",
         onEnd: function() {
+          // Update button visibility after drag ends
+          updateButtonVisibility();
           // Auto-save when drag ends
           saveOrder();
         }
       });
+
+      // Initial button visibility setup
+      updateButtonVisibility();
     });
   </script>
 {% endblock %}
@@ -243,7 +279,8 @@
         }
 
         .listing__item:hover {
-            border-color: #007cba;
+            background-color: #f8f9fa;
+            border-color: #b1b4b7ff;
             box-shadow: 0 2px 4px rgba(0, 123, 186, 0.1);
         }
 
