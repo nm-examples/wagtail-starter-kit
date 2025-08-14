@@ -12,9 +12,8 @@
     "scripts:watch": "concurrently \"npm run scripts -- --watch\"",
     "images": "node scripts/images.js",
     "clean": "rm -rf static_compiled",
-    "server": "node scripts/server.js",
     "build": "concurrently \"npm run styles:prod\" \"npm run scripts:prod\" \"npm run images\"",
-    "start": "concurrently \"npm run clean\" \"npm run styles:watch\" \"npm run scripts:watch\" \"npm run images\" \"npm run server\""
+    "start": "concurrently \"npm run clean\" \"npm run styles:watch\" \"npm run scripts:watch\" \"npm run images\""
   },
   "repository": {
     "type": "git",
