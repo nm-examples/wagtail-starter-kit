@@ -24,11 +24,9 @@ npm install
 npm start
 ```
 
-`npm start` will also run BrowserSync to reload the browser when changes are made, your site available at [http://localhost:3000](http://localhost:3000)
+`npm start` will watch for file changes and compile the assets.
 
-You will need to make sure the Django server is running at the same time so once you have run `make up` in the root of the project, open a new terminal window and run `npm start`.
-
-**Note:** Use port `3000` for previewing frontend changes but use port `8000` for viewing the Wagtail admin.
+**Note:** `django-browser-reload` is used to automatically reload the browser when changes are made to the frontend files when debug is enabled.
 
 ## Building the frontend (for production)
 

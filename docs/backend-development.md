@@ -46,6 +46,10 @@ The database settings are already set as environment variables in the docker-com
 
 You will need to run though the [initial setup steps](../README.md#getting-started) again including `applying migrations` and `creating a superuser`
 
+## Reload while developing
+
+`django-browser-reload` is used to automatically reload the browser when changes are made to the backend files when debug is enabled.
+
 ## Styleguide module
 
 The project includes a styleguide page at [http://localhost:8000/style-guide/](http://localhost:8000/style-guide/) which demonstrates the Pico CSS classless styling and includes some common HTML elements.
