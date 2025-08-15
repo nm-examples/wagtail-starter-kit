@@ -91,7 +91,7 @@ The Wagtail admin interface will be available at [http://localhost:8000/admin](h
 
 ## Deployment
 
-Currenyly there is no deployment setup included in this project. You could try this [Wagtail deployment guide](https://docs.wagtail.org/en/stable/deployment/index.html) for some ideas.
+Currently there is no deployment setup included in this project. You could try this [Wagtail deployment guide](https://docs.wagtail.org/en/stable/deployment/index.html) for some ideas.
 
 ## Deployment Examples
 
@@ -103,7 +103,7 @@ Currenyly there is no deployment setup included in this project. You could try t
 There are 2 branches that you can use to explore more features of the project:
 
 - [Wagtail 'Getting Started Tutorial' PR](https://github.com/wagtail-examples/wagtail-starter-kit/pull/3) Is a run through of the official Wagtail Getting Started tutorial where a simple blog is created.
-- [Wagtail 'Extended Tutorial'](https://github.com/wagtail-examples/wagtail-starter-kit/pull/4) Is a run through of the official Wagtail Extended Tutorial where the Getting Started Tutorial is extended to include more features.
+- [Wagtail 'Extended Tutorial'](https://github.com/nm-examples/wagtail-starter-kit/pull/11) Is a run through of the official Wagtail Extended Tutorial where the Getting Started Tutorial is extended to include more features.
 
 ## Contributing
 

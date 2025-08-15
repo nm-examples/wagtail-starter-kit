@@ -1,5 +1,5 @@
 /**
- * This is a simple example of a class in ES6.
+ * This is a simple example.
  * It will log a message to the console.
  * Remove this content and write your scripts as required.
  */

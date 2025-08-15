@@ -12,7 +12,13 @@ ALLOWED_HOSTS = ["*"]
 EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
 
 # Remove if not required
-INSTALLED_APPS += ["app.style_guide", "wagtail.contrib.styleguide"]  # noqa F405
+INSTALLED_APPS += [  # noqa F405
+    "app.style_guide",
+    "wagtail.contrib.styleguide",
+    "django_browser_reload",
+]
+
+MIDDLEWARE += ["django_browser_reload.middleware.BrowserReloadMiddleware"]  # noqa F405
 
 
 try:

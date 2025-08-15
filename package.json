@@ -12,9 +12,8 @@
     "scripts:watch": "concurrently \"npm run scripts -- --watch\"",
     "images": "node scripts/images.js",
     "clean": "rm -rf static_compiled",
-    "server": "node scripts/server.js",
     "build": "concurrently \"npm run styles:prod\" \"npm run scripts:prod\" \"npm run images\"",
-    "start": "concurrently \"npm run clean\" \"npm run styles:watch\" \"npm run scripts:watch\" \"npm run images\" \"npm run server\""
+    "start": "concurrently \"npm run clean\" \"npm run styles:watch\" \"npm run scripts:watch\" \"npm run images\""
   },
   "repository": {
     "type": "git",
@@ -30,11 +29,10 @@
   },
   "homepage": "https://github.com/wagtail-examples/wagtail-starter-kit#readme",
   "devDependencies": {
-    "@picocss/pico": "^2.0.6",
-    "browser-sync": "^3.0.3",
-    "concurrently": "^9.1.2",
+    "@picocss/pico": "^2.1.1",
+    "concurrently": "^9.2.0",
     "esbuild": "^0.24.2",
-    "sass": "1.76",
+    "sass": "^1.90.0",
     "sharp": "^0.33.5"
   }
 }
