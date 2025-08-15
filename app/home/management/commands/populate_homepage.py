@@ -37,6 +37,9 @@ class Command(BaseCommand):
             available_images = Image.objects.all()
             selected_image = None
             image_embed = ""
+            hero_image = None
+            hero_text = None
+            hero_cta = None
 
             if available_images.exists():
                 # Select a random image
@@ -47,6 +50,10 @@ class Command(BaseCommand):
                     f'format="left" id="{selected_image.id}"/>'
                 )
                 self.stdout.write(f"Selected image: {selected_image.title}")
+                # Set hero section fields if they are not already set
+                hero_image = selected_image
+                hero_text = "Your Hero Section Title"
+                hero_cta = "Your Hero Section CTA, you need to set a link"
             else:
                 self.stdout.write(
                     "No images found - content will be created without images"
@@ -99,6 +106,12 @@ selecting your home page. From there, you can:</p>
 
 <p><em>Happy building with Wagtail!</em></p>
             """.strip()
+
+            if hero_image:
+                # Update the hero section fields
+                home_page.image = hero_image
+                home_page.hero_text = hero_text
+                home_page.hero_cta = hero_cta
 
             # Update the home page body content
             home_page.body = sample_content
