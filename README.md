@@ -11,7 +11,8 @@ You can use this project as a starting point for your own Wagtail projects and b
 - Frontend Node SASS and Javascript compilation
 - Pico CSS for almost classless styling
 - esbuild javascript bundler
-- Wagtail CMS v7.0.2
+- Wagtail CMS v7.2
+- Django v5.2
 
 ![Wagtail Starter Kit](./docs/welcome-screen.jpg)
 
