@@ -30,9 +30,9 @@
   "homepage": "https://github.com/wagtail-examples/wagtail-starter-kit#readme",
   "devDependencies": {
     "@picocss/pico": "^2.1.1",
-    "concurrently": "^9.2.0",
-    "esbuild": "^0.24.2",
-    "sass": "^1.90.0",
-    "sharp": "^0.33.5"
+    "concurrently": "^9.2.1",
+    "esbuild": "^0.27.0",
+    "sass": "^1.94.2",
+    "sharp": "^0.34.5"
   }
 }
