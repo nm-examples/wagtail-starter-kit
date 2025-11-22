@@ -128,6 +128,7 @@ class Command(BaseCommand):
                     "<p>Welcome to our blog! Here you'll find the latest news, "
                     "insights, and stories from our team.</p>"
                 ),
+                show_in_menus=True,
             )
             home_page.add_child(instance=blog_index)
             blog_index.save_revision().publish()
