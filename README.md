@@ -102,7 +102,7 @@ Currently there is no deployment setup included in this project. You could try t
 
 There are 2 branches that you can use to explore more features of the project:
 
-- [Wagtail 'Getting Started Tutorial' PR](https://github.com/wagtail-examples/wagtail-starter-kit/pull/3) Is a run through of the official Wagtail Getting Started tutorial where a simple blog is created.
+- [Wagtail 'Getting Started Tutorial' PR](https://github.com/nm-examples/wagtail-starter-kit/pull/22) Is a run through of the official Wagtail Getting Started tutorial where a simple blog is created.
 - [Wagtail 'Extended Tutorial'](https://github.com/nm-examples/wagtail-starter-kit/pull/11) Is a run through of the official Wagtail Extended Tutorial where the Getting Started Tutorial is extended to include more features.
 
 ## Contributing
