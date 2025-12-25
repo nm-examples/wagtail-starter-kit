@@ -6,19 +6,14 @@ repos:
       - id: end-of-file-fixer
       - id: check-yaml
       - id: check-added-large-files
-  - repo: https://github.com/psf/black
-    rev: 25.1.0  # Keep in sync with locked version
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.8.4
     hooks:
-      - id: black
-  - repo: https://github.com/pycqa/isort
-    rev: 7.0.0  # Keep in sync with locked version
-    hooks:
-      - id: isort
-        name: isort (python)
-  - repo: https://github.com/pycqa/flake8
-    rev: 7.3.0  # Keep in sync with locked version
-    hooks:
-    -   id: flake8
+      # Run the linter
+      - id: ruff
+        args: [--fix]
+      # Run the formatter
+      - id: ruff-format
   - repo: https://github.com/asottile/pyupgrade
     rev: v3.21.2  # Keep in sync with locked version
     hooks:

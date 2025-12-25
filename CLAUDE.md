@@ -136,9 +136,7 @@ docker exec -it wagtail-starter-kit-app-1 python manage.py create_sample_media -
 ## Code Quality Tools
 
 **Pre-commit hooks** (`.pre-commit-config.yaml`):
-- `black` - Code formatting
-- `isort` - Import sorting
-- `flake8` - Linting
+- `ruff` - Fast linter and formatter (replaces black, isort, and flake8)
 - `pyupgrade` - Python 3.10+ syntax updates
 - `django-upgrade` - Django 5.2 best practices
 

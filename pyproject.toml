@@ -14,11 +14,56 @@ dependencies = [
 
 [tool.uv]
 dev-dependencies = [
-    "black",
     "coverage",
     "django-upgrade",
-    "flake8",
-    "isort",
     "pre-commit",
     "pyupgrade",
+    "ruff",
 ]
+
+[tool.ruff]
+# Same as Black's default
+line-length = 88
+target-version = "py310"
+
+# Enable rule sets equivalent to flake8, isort, and additional useful rules
+lint.select = [
+    "E",      # pycodestyle errors
+    "W",      # pycodestyle warnings
+    "F",      # pyflakes
+    "I",      # isort
+    "N",      # pep8-naming
+    "UP",     # pyupgrade (already using pyupgrade in pre-commit)
+    "B",      # flake8-bugbear (common bugs)
+    "C4",     # flake8-comprehensions
+    "DJ",     # flake8-django
+    "SIM",    # flake8-simplify
+]
+
+# Ignore rules that conflict with Django or are too strict for this project
+lint.ignore = [
+    "E501",   # Line too long (handled by formatter)
+    "DJ001",  # Avoid nullable CharField/TextField (common pattern in Django)
+    "N812",   # Lowercase imported as non-lowercase (common pattern for version constants)
+    "SIM105", # Use contextlib.suppress instead of try-except-pass (try-except is clearer)
+]
+
+# Exclude patterns
+exclude = [
+    ".git",
+    ".venv",
+    "__pycache__",
+    "*/migrations/*",
+    "node_modules",
+    "static_compiled",
+]
+
+[tool.ruff.lint.isort]
+# Black-compatible import sorting
+known-first-party = ["app"]
+
+[tool.ruff.format]
+# Use Black-compatible formatting
+quote-style = "double"
+indent-style = "space"
+line-ending = "auto"
