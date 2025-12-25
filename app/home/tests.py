@@ -7,15 +7,24 @@ from app.home.models import HomePage
 class HomeTestCase(TestCase):
     """Tests for the home app frontend and admin."""
 
+    @classmethod
+    def setUpTestData(cls):
+        """Set up test data for the entire test case."""
+        cls.home_page = HomePage.objects.first()
+        cls.test_password = "TestPass123!"
+
     def setUp(self):
         """Create a test user for admin access."""
-        # Create test user
-        User.objects.create_user(
-            username="testuser", password="12345", is_staff=True, is_superuser=True
+        self.user = User.objects.create_user(
+            username="testuser",
+            password=self.test_password,
+            is_staff=True,
+            is_superuser=True,
         )
 
-        # Get the existing home page
-        self.home_page = HomePage.objects.first()
+    def _login_as_admin(self):
+        """Helper method to log in as admin user."""
+        self.client.login(username="testuser", password=self.test_password)
 
     def test_home_frontend_returns_200(self):
         """Test that the home page frontend returns 200 OK."""
@@ -26,30 +35,32 @@ class HomeTestCase(TestCase):
 
     def test_home_admin_edit_returns_200(self):
         """Test that the home page admin edit page returns 200 OK."""
-        self.client.login(username="testuser", password="12345")
+        self._login_as_admin()
         response = self.client.get(f"/admin/pages/{self.home_page.pk}/edit/")
         self.assertEqual(response.status_code, 200)
+        self.assertContains(response, self.home_page.title)
 
     def test_home_admin_delete_returns_200(self):
         """Test that the home page admin delete page returns 200 OK."""
-        self.client.login(username="testuser", password="12345")
+        self._login_as_admin()
         response = self.client.get(f"/admin/pages/{self.home_page.pk}/delete/")
         self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "Are you sure")
 
     def test_home_admin_copy_returns_200(self):
         """Test that the home page admin copy page returns 200 OK."""
-        self.client.login(username="testuser", password="12345")
+        self._login_as_admin()
         response = self.client.get(f"/admin/pages/{self.home_page.pk}/copy/")
         self.assertEqual(response.status_code, 200)
 
     def test_home_admin_move_returns_200(self):
         """Test that the home page admin move page returns 200 OK."""
-        self.client.login(username="testuser", password="12345")
+        self._login_as_admin()
         response = self.client.get(f"/admin/pages/{self.home_page.pk}/move/")
         self.assertEqual(response.status_code, 200)
 
     def test_home_admin_history_returns_200(self):
         """Test that the home page admin history page returns 200 OK."""
-        self.client.login(username="testuser", password="12345")
+        self._login_as_admin()
         response = self.client.get(f"/admin/pages/{self.home_page.pk}/history/")
         self.assertEqual(response.status_code, 200)

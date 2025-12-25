@@ -21,6 +21,14 @@ jobs:
       - name: Install uv
         uses: astral-sh/setup-uv@v4
 
+      - name: Cache Python dependencies
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/uv
+          key: ${{ runner.os }}-uv-${{ hashFiles('**/uv.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-uv-
+
       - name: Install dependencies
         run: uv sync
 
@@ -32,6 +40,8 @@ jobs:
   test:
     name: Run tests
     runs-on: ubuntu-latest
+    env:
+      DJANGO_SETTINGS_MODULE: app.settings.dev
     steps:
       - uses: actions/checkout@v4
 
@@ -44,9 +54,18 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '20'
+          cache: 'npm'
 
       - name: Install uv
         uses: astral-sh/setup-uv@v4
+
+      - name: Cache Python dependencies
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/uv
+          key: ${{ runner.os }}-uv-${{ hashFiles('**/uv.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-uv-
 
       - name: Install Python dependencies
         run: uv sync
@@ -59,10 +78,6 @@ jobs:
 
       - name: Collect static files
         run: uv run python manage.py collectstatic --noinput
-        env:
-          DJANGO_SETTINGS_MODULE: app.settings.dev
 
       - name: Run Django tests
         run: uv run python manage.py test
-        env:
-          DJANGO_SETTINGS_MODULE: app.settings.dev
