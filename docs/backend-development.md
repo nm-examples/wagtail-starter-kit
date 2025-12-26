@@ -6,43 +6,52 @@ It's recommended to use the same database in development as you will use in prod
 
 If you added any data to the SQLite database you will need to add it again to the new database if you change it here. It's therefore a good idea to **choose your database before you start** adding data/content to the project.
 
-The process to change the database is simple and is outlined below, essentially you need to comment out the database you are not using and uncomment the one you are using in the `Makefile` and rebuild the Docker containers.
+The process to change the database is simple and is outlined below. You select the database using a `.env` file without editing the `Makefile`.
 
-## Use MYSQL database while developing
+## Choose a database using .env
 
-Open the Makefile (at the root of your project) and comment out the line:
-
-```bash
-DC = docker compose -f compose.yaml -f compose.sqlite3.override.yaml # SQLITE Database
-```
-
-and uncomment the line:
+1. Copy the example env file and pick a database:
 
 ```bash
-DC = docker compose -f compose.yaml -f compose.mysql.override.yaml # MySQL Database
+cp .env.example .env
+# choose one of: sqlite (default), postgres, mysql
+sed -i '' 's/^DATABASE=.*/DATABASE=mysql/' .env   # macOS example
 ```
 
-This will run a MySQL database as a service in the Docker container and use it as the database for the project.
-
-## Use Postgres database while developing
-
-Open the Makefile (at the root of your project) and comment out the line:
+2. Build and start the stack:
 
 ```bash
-DC = docker compose -f compose.yaml -f compose.sqlite3.override.yaml # SQLITE Database
+make build
+make up
 ```
 
-and uncomment the line:
+3. Apply migrations and create a superuser:
 
 ```bash
-DC = docker compose -f compose.yaml -f compose.postgresql.override.yaml # PostgreSQL Database
+make migrate
+make superuser
 ```
 
-This will run a Postgres database as a service in the Docker container and use it as the database for the project.
+When `DATABASE=mysql` the MySQL service from `compose.mysql.override.yaml` is used. When `DATABASE=postgres` the PostgreSQL service from `compose.postgresql.override.yaml` is used. Otherwise SQLite is used by default.
+
+## Notes for Postgres and MySQL
+
+- No manual edits to the Makefile are required; it reads `.env` and selects the correct compose override.
+- Database environment variables (`MYSQL_*` / `POSTGRES_*`) are provided by the override files and consumed by `app/settings/base.py`.
 
 ### Database settings
 
-The database settings are already set as environment variables in the docker-compose files so no further configuration is required.
+The database settings are already set as environment variables in the docker-compose files so no further configuration is required beyond setting `DATABASE` in `.env`.
+
+### Validate environment
+
+Before building or starting services, verify required variables with:
+
+```bash
+make check-env
+```
+
+This checks common settings and the DB-specific variables for the selected `DATABASE` in `.env`. If anything is missing, it prints the missing keys so you can update `.env` (use `.env.example` as a guide).
 
 You will need to run though the [initial setup steps](../README.md#getting-started) again including `applying migrations` and `creating a superuser`
 
