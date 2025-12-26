@@ -29,7 +29,6 @@ help:
 	@echo ""
 	@echo "Miscellaneous"
 	@echo " quickstart     Build, start, and run the containers (npm & docker)"
-	@echo " requirements   Export requirements.txt (uv)"
 	@echo " docker-size    Show the size of the Docker image $(IMAGE_NAME)"
 	@echo " docker-build-size  Build the Docker image and show its size"
 	@echo " docker-prune   Remove unused Docker data (images, containers, networks)"
@@ -111,11 +110,6 @@ start:
 	npm install
 	npm run build
 	npm run start
-
-# Export requirements.txt
-.PHONY: requirements
-requirements:
-	uv export --no-hashes --no-dev --output-file requirements.txt --locked
 
 # Show the size of the built Docker image
 .PHONY: docker-size
