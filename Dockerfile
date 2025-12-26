@@ -33,6 +33,7 @@ RUN apt-get update --yes --quiet && apt-get install --yes --quiet --no-install-r
     libjpeg62-turbo \
     zlib1g \
     libwebp7 \
+    libmariadb3 \
  && rm -rf /var/lib/apt/lists/*
 
 # Prepare app workspace and install Python deps using uv from pyproject.
@@ -45,10 +46,12 @@ ENV UV_NO_DEV=1 \
 # Temporarily install build tools and headers to allow building wheels, then purge.
 RUN apt-get update --yes --quiet && apt-get install --yes --quiet --no-install-recommends \
     build-essential \
+    pkg-config \
     libpq-dev \
     libjpeg62-turbo-dev \
     zlib1g-dev \
-    libwebp-dev
+    libwebp-dev \
+    default-libmysqlclient-dev
 RUN --mount=type=cache,target=/root/.cache/uv \
     uv python install
 
@@ -56,6 +59,9 @@ RUN --mount=type=cache,target=/root/.cache/uv \
 RUN --mount=type=cache,target=/root/.cache/uv \
     uv export --locked --no-dev --no-hashes --output-file /tmp/requirements.txt && \
     UV_SYSTEM_PYTHON=1 uv pip install --system -r /tmp/requirements.txt
+
+# Optional DB driver installation (ensure build deps present before purge)
+RUN if [ -n "$DBMODULE" ]; then echo "Installing DB module: $DBMODULE" && $DBMODULE; else echo "No DBMODULE specified"; fi
 
 # Remove build-only packages to slim the final image.
 RUN apt-get purge --yes --quiet \
@@ -69,8 +75,6 @@ RUN apt-get purge --yes --quiet \
 
 # Use system Python at runtime; no virtualenv activation required.
 
-# Optional DB driver installation (kept for compatibility with existing compose overrides).
-RUN ${DBMODULE}
 
 # Use /app folder as a directory where the source code is stored.
 COPY --from=0 ./static_compiled ./static_compiled
