@@ -36,11 +36,14 @@ Optional:
 
 1. Clone this repository [https://github.com/wagtail-examples/wagtail-starter-kit.git](https://github.com/wagtail-examples/wagtail-starter-kit.git) to a location on your computer
 2. Change into the project directory
-3. Run `make build` to build the Docker containers
-4. Run `make up` to start the Docker containers
-5. Run `make migrate` to apply database migrations
-6. Run `make superuser` to create a superuser
-7. Run `make run` to start the Django development server
+3. Copy `.env.example` to `.env` and choose your database (default is SQLite). Set `DATABASE=sqlite|postgres|mysql`.
+4. Run `make build` to build the Docker containers
+5. Run `make up` to start the Docker containers
+6. Run `make migrate` to apply database migrations
+7. Run `make superuser` to create a superuser
+8. Run `make run` to start the Django development server
+
+Note: `.env` is required. `make build` and `make up` validate environment variables via `make check-env` and will fail if required values are missing. See `.env.example` for all keys.
 
 ### Quick start
 
@@ -52,9 +55,9 @@ make quickstart
 
 You'll need to run `make superuser` separately.
 
-If you haven't made changes to the configuration the app will have available the following services for use in development:
+If you haven't changed `.env` the app will default to:
 
-- Use sqlite as the database
+- Use SQLite as the database
 - A mail utility will be available at [http://localhost:8025](http://localhost:8025)
 - A database management utility will be available at [http://localhost:8080](http://localhost:8080)
 

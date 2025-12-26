@@ -1,16 +1,28 @@
 # Makefile for Docker Compose commands
 
-# --- Un-comment based on the database you want to use --- #
-DC = docker compose -f compose.yaml -f compose.sqlite3.override.yaml # SQLITE Database
-# DC = docker compose -f compose.yaml -f compose.postgresql.override.yaml # PostgreSQL Database
-# DC = docker compose -f compose.yaml -f compose.mysql.override.yaml # MySQL Database
-# --- #
+# Load .env so we can switch database without editing this file
+include .env
+
+# Default Docker image name for direct builds
+IMAGE_NAME ?= wagtail-starter-kit
+
+# Determine which compose override to use based on DATABASE env var
+# Allowed values: sqlite (default), postgres, mysql
+ifeq ($(DATABASE),postgres)
+COMPOSE_DB_FILE := compose.postgresql.override.yaml
+else ifeq ($(DATABASE),mysql)
+COMPOSE_DB_FILE := compose.mysql.override.yaml
+else
+COMPOSE_DB_FILE := compose.sqlite3.override.yaml
+endif
+
+DC = docker compose -f compose.yaml -f $(COMPOSE_DB_FILE)
 
 .PHONY: help
 help:
 	@echo "Usage: make [target]"
 	@echo ""
-	@echo "Docker Compose commands"
+	@echo "Docker Compose commands (DATABASE=$(DATABASE) -> $(COMPOSE_DB_FILE))"
 	@echo " build          Build the Docker containers"
 	@echo " up             Start the Docker containers"
 	@echo " down           Stop and remove the Docker containers"
@@ -25,21 +37,58 @@ help:
 	@echo " restart        Restart the containers"
 	@echo ""
 	@echo "Miscellaneous"
+	@echo " check-env      Validate required .env variables for selected database"
 	@echo " quickstart     Build, start, and run the containers (npm & docker)"
-	@echo " requirements   Export requirements.txt (uv)"
+	@echo " docker-size    Show the size of the Docker image $(IMAGE_NAME)"
+	@echo " docker-build-size  Build the Docker image and show its size"
+	@echo " docker-prune   Remove unused Docker data (images, containers, networks)"
+	@echo "                 Add WITH_VOLUMES=1 to include volumes"
+	@echo " docker-prune-all  Remove unused Docker data including volumes"
 	@echo " clean          Clean up generated files and folders (node_modules, static, media, etc.)"
 	@echo " frontend       Build the frontend (npm)"
 	@echo " start          Build the front end and start local development server (npm)"
 	@echo ""
 
+# Required env variables
+REQUIRED_COMMON := DJANGO_ALLOWED_HOSTS DJANGO_SECRET_KEY WAGTAIL_SITE_NAME WAGTAILADMIN_BASE_URL
+ifeq ($(DATABASE),postgres)
+REQUIRED_DB := POSTGRES_HOST POSTGRES_PORT POSTGRES_DB POSTGRES_USER POSTGRES_PASSWORD
+else ifeq ($(DATABASE),mysql)
+REQUIRED_DB := MYSQL_HOST MYSQL_PORT MYSQL_DATABASE MYSQL_USER MYSQL_PASSWORD MYSQL_ROOT_PASSWORD MYSQL_ROOT_HOST
+else
+REQUIRED_DB :=
+endif
+
+.PHONY: check-env
+check-env:
+	@if [ ! -f .env ]; then \
+	  echo "Missing .env. Copy .env.example to .env and set required values."; \
+	  exit 1; \
+	fi; \
+	set -a; . ./.env; set +a; \
+	missing=0; \
+	for v in $(REQUIRED_COMMON) $(REQUIRED_DB); do \
+	  val=$$(printenv $$v); \
+	  if [ -z "$$val" ]; then \
+	    echo "Missing required env var: $$v"; \
+	    missing=1; \
+	  fi; \
+	done; \
+	if [ $$missing -ne 0 ]; then \
+	  echo "\nSet the missing variables in .env (DATABASE=$(DATABASE))."; \
+	  exit 1; \
+	else \
+	  echo "Environment OK for DATABASE=$(DATABASE)"; \
+	fi
+
 # Build the containers
 .PHONY: build
-build:
+build: check-env
 	$(DC) build
 
 # Start the containers
 .PHONY: up
-up:
+up: check-env
 	$(DC) up -d
 
 # Stop and remove containers, networks, and volumes
@@ -104,10 +153,33 @@ start:
 	npm run build
 	npm run start
 
-# Export requirements.txt
-.PHONY: requirements
-requirements:
-	uv export --no-hashes --no-dev --output-file requirements.txt --locked
+# Show the size of the built Docker image
+.PHONY: docker-size
+docker-size:
+	@docker image ls $(IMAGE_NAME) --format '{{.Repository}}:{{.Tag}} {{.Size}}' | sed -n '1p' || (echo "Image not found: $(IMAGE_NAME)" && exit 1)
+
+# Build the Docker image directly and print its size
+.PHONY: docker-build-size
+docker-build-size:
+	docker build -t $(IMAGE_NAME) .
+	@docker image ls $(IMAGE_NAME) --format '{{.Repository}}:{{.Tag}} {{.Size}}' | sed -n '1p'
+
+# Prune unused Docker resources
+.PHONY: docker-prune
+docker-prune:
+	@if [ "$(WITH_VOLUMES)" = "1" ]; then \
+		echo "Pruning unused Docker data (including volumes)"; \
+		docker system prune -f --volumes; \
+	else \
+		echo "Pruning unused Docker data (images, containers, networks)"; \
+		docker system prune -f; \
+	fi
+
+# Always prune including volumes
+.PHONY: docker-prune-all
+docker-prune-all:
+	@echo "Pruning unused Docker data (including volumes)"
+	docker system prune -f --volumes
 
 # Clean up
 .PHONY: clean

@@ -9,11 +9,11 @@ services:
       db:
         condition: service_healthy
     environment:
-      POSTGRES_USER: app
-      POSTGRES_PASSWORD: app
-      POSTGRES_DB: app
-      POSTGRES_HOST: db
-      POSTGRES_PORT: 5432
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_HOST: ${POSTGRES_HOST}
+      POSTGRES_PORT: ${POSTGRES_PORT}
   db:
     image: postgres:16
     ports:
@@ -26,11 +26,11 @@ services:
       timeout: 20s
       retries: 5
     environment:
-      POSTGRES_USER: app
-      POSTGRES_PASSWORD: app
-      POSTGRES_DB: app
-      POSTGRES_HOST: db
-      POSTGRES_PORT: 5432
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_HOST: ${POSTGRES_HOST}
+      POSTGRES_PORT: ${POSTGRES_PORT}
 
   # A convienient utility app to manage the database https://hub.docker.com/_/adminer/
   # Accessible at http://localhost:8080/?pgsql choose postgres as the database type in the UI

@@ -80,7 +80,7 @@ class Command(BaseCommand):
         zip_msg = " and ZIP archives" if not options["no_zip"] else ""
         self.stdout.write(
             self.style.SUCCESS(
-                f'Successfully created {options["images"]} images, {options["documents"]} documents{zip_msg}'
+                f"Successfully created {options['images']} images, {options['documents']} documents{zip_msg}"
             )
         )
 
@@ -207,14 +207,16 @@ class Command(BaseCommand):
                 shape_color = tuple(random.randint(0, 255) for _ in range(3))
 
                 if shape_type == "rectangle":
-                    x1, y1 = random.randint(0, width // 2), random.randint(
-                        0, height // 2
+                    x1, y1 = (
+                        random.randint(0, width // 2),
+                        random.randint(0, height // 2),
                     )
                     x2, y2 = random.randint(x1, width), random.randint(y1, height)
                     draw.rectangle([x1, y1, x2, y2], fill=shape_color, outline=None)
                 elif shape_type == "ellipse":
-                    x1, y1 = random.randint(0, width // 2), random.randint(
-                        0, height // 2
+                    x1, y1 = (
+                        random.randint(0, width // 2),
+                        random.randint(0, height // 2),
                     )
                     x2, y2 = random.randint(x1, width), random.randint(y1, height)
                     draw.ellipse([x1, y1, x2, y2], fill=shape_color, outline=None)
@@ -261,7 +263,7 @@ class Command(BaseCommand):
             img_io.seek(0)
 
             # Create Wagtail Image with unique title
-            filename = f"sample_image_{i+1}_{slugify(unique_title)}.jpg"
+            filename = f"sample_image_{i + 1}_{slugify(unique_title)}.jpg"
             image = Image(
                 title=unique_title, file=ContentFile(img_io.getvalue(), name=filename)
             )
@@ -460,17 +462,17 @@ class Command(BaseCommand):
             # Create content with more detail
             content = f"""
 {unique_title}
-{'=' * len(unique_title)}
+{"=" * len(unique_title)}
 
 Date: {self.get_random_date()}
-Author: Sample Author {i+1}
+Author: Sample Author {i + 1}
 Version: 1.{i}
 Department: {context}
 Project: {project}
 
 Overview
 --------
-{doc_info['content']}
+{doc_info["content"]}
 
 This document contains important information that has been generated automatically
 for demonstration purposes. In a real-world scenario, this would contain actual
@@ -493,12 +495,12 @@ Conclusion
 This document serves as a valuable resource for understanding the topic at hand
 and provides actionable insights for implementation.
 
-Document ID: DOC-{str(i+1).zfill(3)}
+Document ID: DOC-{str(i + 1).zfill(3)}
 Classification: Public
 """
 
             # Create text file
-            filename = f"{slugify(unique_title)}_{i+1}.txt"
+            filename = f"{slugify(unique_title)}_{i + 1}.txt"
 
             # Convert content to bytes
             content_bytes = content.encode("utf-8")
@@ -599,10 +601,10 @@ document management systems, search functionality, and user interfaces.
             with zipfile.ZipFile(themed_zip, "w", zipfile.ZIP_DEFLATED) as zipf:
                 # Add a themed README
                 themed_readme = f"""
-{zip_info['description']}
-{'=' * len(zip_info['description'])}
+{zip_info["description"]}
+{"=" * len(zip_info["description"])}
 
-This themed archive contains {len(zip_docs)} documents related to {zip_info['description'].lower()}.
+This themed archive contains {len(zip_docs)} documents related to {zip_info["description"].lower()}.
 
 Contents:
 ---------
@@ -612,7 +614,7 @@ Contents:
 
                 themed_readme += f"""
 Created: {self.get_random_date()}
-Theme: {zip_info['description']}
+Theme: {zip_info["description"]}
 Files: {len(zip_docs)}
 """
 
