@@ -1,4 +1,4 @@
-FROM node:20
+FROM node:24
 
 COPY package.json package-lock.json ./
 RUN npm install
@@ -39,8 +39,8 @@ RUN apt-get update --yes --quiet && apt-get install --yes --quiet --no-install-r
 WORKDIR /app
 COPY pyproject.toml uv.lock ./
 ENV UV_NO_DEV=1 \
-    UV_LINK_MODE=copy
-ENV UV_PYTHON_CACHE_DIR=/root/.cache/uv/python
+    UV_LINK_MODE=copy \
+    UV_PYTHON_CACHE_DIR=/root/.cache/uv/python
 
 # Temporarily install build tools and headers to allow building wheels, then purge.
 RUN apt-get update --yes --quiet && apt-get install --yes --quiet --no-install-recommends \
@@ -51,8 +51,11 @@ RUN apt-get update --yes --quiet && apt-get install --yes --quiet --no-install-r
     libwebp-dev
 RUN --mount=type=cache,target=/root/.cache/uv \
     uv python install
+
+# Install project dependencies into system Python using the lockfile
 RUN --mount=type=cache,target=/root/.cache/uv \
-    uv sync --locked
+    uv export --locked --no-dev --no-hashes --output-file /tmp/requirements.txt && \
+    UV_SYSTEM_PYTHON=1 uv pip install --system -r /tmp/requirements.txt
 
 # Remove build-only packages to slim the final image.
 RUN apt-get purge --yes --quiet \
@@ -64,9 +67,7 @@ RUN apt-get purge --yes --quiet \
  && apt-get autoremove --yes --quiet --purge \
  && rm -rf /var/lib/apt/lists/*
 
-# Ensure the container uses the project virtualenv at runtime.
-ENV VIRTUAL_ENV=/app/.venv \
-    PATH="/app/.venv/bin:$PATH"
+# Use system Python at runtime; no virtualenv activation required.
 
 # Optional DB driver installation (kept for compatibility with existing compose overrides).
 RUN ${DBMODULE}
@@ -82,12 +83,11 @@ RUN chown -R wagtail:wagtail /app
 # Copy the source code of the project into the container.
 COPY --chown=wagtail:wagtail . .
 
-# Use user "wagtail" to run the build commands below and the server itself.
+# Collect static files using system Python (run as root).
+RUN python manage.py collectstatic --noinput --clear
+
+# Switch to non-root user for runtime.
 USER wagtail
-
-# Collect static files using the project environment.
-RUN uv run python manage.py collectstatic --noinput --clear
-
 # Runtime command that executes when "docker run" is called, it does the
 # following:
 #   1. Migrate the database.
