@@ -1,5 +1,8 @@
 # Makefile for Docker Compose commands
 
+# Default Docker image name for direct builds
+IMAGE_NAME ?= wagtail-starter-kit
+
 # --- Un-comment based on the database you want to use --- #
 DC = docker compose -f compose.yaml -f compose.sqlite3.override.yaml # SQLITE Database
 # DC = docker compose -f compose.yaml -f compose.postgresql.override.yaml # PostgreSQL Database
@@ -27,6 +30,11 @@ help:
 	@echo "Miscellaneous"
 	@echo " quickstart     Build, start, and run the containers (npm & docker)"
 	@echo " requirements   Export requirements.txt (uv)"
+	@echo " docker-size    Show the size of the Docker image $(IMAGE_NAME)"
+	@echo " docker-build-size  Build the Docker image and show its size"
+	@echo " docker-prune   Remove unused Docker data (images, containers, networks)"
+	@echo "                 Add WITH_VOLUMES=1 to include volumes"
+	@echo " docker-prune-all  Remove unused Docker data including volumes"
 	@echo " clean          Clean up generated files and folders (node_modules, static, media, etc.)"
 	@echo " frontend       Build the frontend (npm)"
 	@echo " start          Build the front end and start local development server (npm)"
@@ -108,6 +116,34 @@ start:
 .PHONY: requirements
 requirements:
 	uv export --no-hashes --no-dev --output-file requirements.txt --locked
+
+# Show the size of the built Docker image
+.PHONY: docker-size
+docker-size:
+	@docker image ls $(IMAGE_NAME) --format '{{.Repository}}:{{.Tag}} {{.Size}}' | sed -n '1p' || (echo "Image not found: $(IMAGE_NAME)" && exit 1)
+
+# Build the Docker image directly and print its size
+.PHONY: docker-build-size
+docker-build-size:
+	docker build -t $(IMAGE_NAME) .
+	@docker image ls $(IMAGE_NAME) --format '{{.Repository}}:{{.Tag}} {{.Size}}' | sed -n '1p'
+
+# Prune unused Docker resources
+.PHONY: docker-prune
+docker-prune:
+	@if [ "$(WITH_VOLUMES)" = "1" ]; then \
+		echo "Pruning unused Docker data (including volumes)"; \
+		docker system prune -f --volumes; \
+	else \
+		echo "Pruning unused Docker data (images, containers, networks)"; \
+		docker system prune -f; \
+	fi
+
+# Always prune including volumes
+.PHONY: docker-prune-all
+docker-prune-all:
+	@echo "Pruning unused Docker data (including volumes)"
+	docker system prune -f --volumes
 
 # Clean up
 .PHONY: clean

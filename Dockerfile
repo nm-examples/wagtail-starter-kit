@@ -27,13 +27,12 @@ ENV PYTHONUNBUFFERED=1 \
     PORT=8000 \
     DBMODULE=${DBMODULE}
 
-# Install system packages required by Wagtail and Django.
+# Install runtime system libraries required by Wagtail/Django and Pillow.
 RUN apt-get update --yes --quiet && apt-get install --yes --quiet --no-install-recommends \
-    build-essential \
-    libpq-dev \
-    libjpeg62-turbo-dev \
-    zlib1g-dev \
-    libwebp-dev \
+    libpq5 \
+    libjpeg62-turbo \
+    zlib1g \
+    libwebp7 \
  && rm -rf /var/lib/apt/lists/*
 
 # Prepare app workspace and install Python deps using uv from pyproject.
@@ -42,10 +41,28 @@ COPY pyproject.toml uv.lock ./
 ENV UV_NO_DEV=1 \
     UV_LINK_MODE=copy
 ENV UV_PYTHON_CACHE_DIR=/root/.cache/uv/python
+
+# Temporarily install build tools and headers to allow building wheels, then purge.
+RUN apt-get update --yes --quiet && apt-get install --yes --quiet --no-install-recommends \
+    build-essential \
+    libpq-dev \
+    libjpeg62-turbo-dev \
+    zlib1g-dev \
+    libwebp-dev
 RUN --mount=type=cache,target=/root/.cache/uv \
     uv python install
 RUN --mount=type=cache,target=/root/.cache/uv \
     uv sync --locked
+
+# Remove build-only packages to slim the final image.
+RUN apt-get purge --yes --quiet \
+    build-essential \
+    libpq-dev \
+    libjpeg62-turbo-dev \
+    zlib1g-dev \
+    libwebp-dev \
+ && apt-get autoremove --yes --quiet --purge \
+ && rm -rf /var/lib/apt/lists/*
 
 # Ensure the container uses the project virtualenv at runtime.
 ENV VIRTUAL_ENV=/app/.venv \
