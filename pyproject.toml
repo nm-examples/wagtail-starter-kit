@@ -12,8 +12,8 @@ dependencies = [
     "wagtail~=7.2",
 ]
 
-[tool.uv]
-dev-dependencies = [
+[dependency-groups]
+dev = [
     "coverage",
     "django-upgrade",
     "pre-commit",
