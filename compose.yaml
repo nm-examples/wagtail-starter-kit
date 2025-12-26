@@ -5,6 +5,7 @@ services:
       dockerfile: ./Dockerfile
     volumes:
       - .:/app
+      - /app/static_compiled  # Preserve built static files from Docker image
     ports:
       - "8000:8000"
     environment:
