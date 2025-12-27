@@ -27,6 +27,7 @@ DEBUG = os.getenv("DEBUG", "False").lower() == "true"
 INSTALLED_APPS = [
     "app.home",
     "app.search",
+    "app.blog",
     "wagtail.contrib.forms",
     "wagtail.contrib.redirects",
     "wagtail.contrib.table_block",

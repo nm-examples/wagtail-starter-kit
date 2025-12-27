@@ -74,14 +74,17 @@ The project includes custom Django management commands to help with development 
 
 For detailed documentation on all available commands, see [Management Commands Documentation](./docs/management-commands.md).
 
-### Quick Examples
+### Quick Examples (recommended running order)
 
 ```bash
 # Create sample images and documents for testing
 docker exec -it wagtail-starter-kit-app-1 python manage.py create_sample_media
 
-# Reset all sample content
-docker exec -it wagtail-starter-kit-app-1 python manage.py create_sample_media --reset
+# Populate the home page with sample content
+docker exec -it wagtail-starter-kit-app-1 python manage.py populate_homepage
+
+# Create a complete blog structure with sample posts and authors
+docker exec -it wagtail-starter-kit-app-1 python manage.py populate_blog
 ```
 
 ## View the site
