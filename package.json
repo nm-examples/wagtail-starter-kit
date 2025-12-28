@@ -31,8 +31,8 @@
   "devDependencies": {
     "@picocss/pico": "^2.1.1",
     "concurrently": "^9.2.1",
-    "esbuild": "^0.27.0",
-    "sass": "^1.94.2",
+    "esbuild": "^0.27.2",
+    "sass": "^1.97.1",
     "sharp": "^0.34.5"
   }
 }
