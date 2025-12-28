@@ -94,17 +94,15 @@ class Author(models.Model):
         FieldPanel("author_image"),
     ]
 
-    def __str__(self):
-        return self.name
-
     class Meta:
         verbose_name_plural = "Authors"
 
+    def __str__(self):
+        return self.name
+
 
 class BlogTagIndexPage(Page):
-
     def get_context(self, request):
-
         # Filter by tag
         tag = request.GET.get("tag")
         blogpages = BlogPage.objects.filter(tags__name=tag)
