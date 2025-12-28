@@ -1,15 +1,24 @@
 {% extends "base.html" %}
-
-{% load wagtailcore_tags %}
+{% load wagtailcore_tags wagtailimages_tags %}
 
 {% block body_class %}template-homepage{% endblock %}
 
 {% block content %}
-    <article>
-        {% if page.body %}
-        {{ page.body|richtext }}
-        {% else %}
-        <p>No content has been added to this page body yet.</p>
-        {% endif %}
-    </article>
-{% endblock %}
+
+{% image page.image fill-1920x1080 as hero_image %}
+
+<article style="background-image: url('{{ hero_image.url }}')" role="hero">
+    <mark>{{ page.hero_text }}</mark>
+    {% if page.hero_cta_link %}
+    <a href="{% pageurl page.hero_cta_link %}" role="button">
+        {% firstof page.hero_cta page.hero_cta_link.title %}
+    </a>
+    {% endif %}
+</article>
+
+<article>
+    <h1>{{ page.title }}</h1>
+    {{ page.body|richtext }}
+</article>
+
+{% endblock content %}

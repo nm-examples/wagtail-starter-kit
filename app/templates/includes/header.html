@@ -1,0 +1,21 @@
+{% load wagtailcore_tags navigation_tags wagtailuserbar %}
+
+<header>
+    <div class="container-fluid">
+        <a href="#main" class="skip-link">Skip to content</a>
+        {% get_site_root as site_root %}
+        <nav role="navigation">
+            <button>Menu</button>
+            <div>
+                <a href="{% pageurl site_root %}" role="button">{{ site_root.title }}</a>
+                {% for menuitem in site_root.get_children.live.in_menu %}
+                    {# Add the child pages of your HomePage that have their `Show in menu` checked #}
+                    <a href="{% pageurl menuitem %}" role="button">{{ menuitem.title }}</a>
+                    {% comment %} {% if not forloop.last %} | {% endif %} {% endcomment %}
+                {% endfor %}
+                <a href="/search/" role="button">Search</a>
+            </div>
+        </nav>
+    </div>
+    {% wagtailuserbar "top-right" %}
+</header>

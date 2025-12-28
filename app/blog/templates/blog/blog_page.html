@@ -6,77 +6,103 @@
 
 {% block content %}
 
-    <div class="grid">
-        <article>
-            <hgroup>
-                <h1>{{ page.title }}</h1>
-                <p class="meta">{{ page.date }}</p>
-            </hgroup>
-            <p><a href="{{ page.get_parent.url }}">Return to blog</a></p>
-        </article>
-
-        <article>
-            {% with authors=page.authors.all %}
-                {% if authors %}
-                <p>Posted by:</p>
-                    {% for author in authors %}
-                    <small>
-                        {% image author.author_image fill-40x40 as author_image %}
-                        {% if author_image %}
-                        <img src="{{ author_image.url }}" alt="{{ author.name }}">
-                        {% else %}
-                        <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 16 16"><title>user</title><g fill="#212121"><circle cx="8" cy="3.5" r="3" fill="none" stroke="#212121" stroke-linecap="round" stroke-linejoin="round"></circle><path d="M8,9c-3.59,0-6.5,2.91-6.5,6.5H14.5c0-3.59-2.91-6.5-6.5-6.5Z" fill="none" stroke="#212121" stroke-linecap="round" stroke-linejoin="round"></path></g></svg>
-                        {% endif %}
-                        {{ author.name }}
-                    </small>
-                    {% endfor %}
-                {% endif %}
-            {% endwith %}
-            <hr>
-            {% blog_tags_page as tags_page %}
-            {% with tags=page.tags.all %}
-                {% if tags %}
-                    <small>Tags:</small>
-                    {% if tags_page %}
-                    {% for tag in tags %}
-                        <a href="{{ tags_page.url }}?tag={{ tag }}">{{ tag }}</a>
-                    {% endfor %}
-                    {% else %}
-                    <p>Create a blog tags page</p>
-                    {% endif %}
-                {% endif %}
-            {% endwith %}
-        </article>
-
-    </div>
+<div class="grid">
 
     <article>
-        <div class="grid">
-            <hgroup>
-                <p>{{ page.intro }}</p>
-                {{ page.body|richtext }}
-            </hgroup>
+        <hgroup>
+            <h1>{{ page.title }}</h1>
+        </hgroup>
+        <footer>
+            <p class="meta">{{ page.date }}</p>
+            <p><a href="{{ page.get_parent.url }}">Return to blog</a></p>
+        </footer>
+    </article>
 
-        </div>
+    <article>
+        Posted by:
+        {% with authors=page.authors.all %}
 
-        {% for item in page.gallery_images.all %}
-        {% if forloop.first or forloop.counter0|divisibleby:3 %}
-        {% comment %} Start a new row {% endcomment %}
-        <div class="grid">
-        {% endif %}
-            <figure>
-                {% image item.image fill-600x400 %}
-                <figcaption>
-                    {{ item.caption }}
-                </figcaption>
-            </figure>
-        {% if forloop.last or forloop.counter|divisibleby:3 %}
-        </div>
-        {% endif %}
+        {% if authors %}
+
+        {% for author in authors %}
+        <small>
+            {% image author.author_image fill-40x40 as author_image %}
+            {% if author_image %}
+            <img src="{{ author_image.url }}" alt="{{ author.name }}">
+            {% else %}
+            <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 16 16">
+                <title>user</title>
+                <g fill="#212121">
+                    <circle cx="8" cy="3.5" r="3" fill="none" stroke="#212121" stroke-linecap="round"
+                        stroke-linejoin="round"></circle>
+                    <path d="M8,9c-3.59,0-6.5,2.91-6.5,6.5H14.5c0-3.59-2.91-6.5-6.5-6.5Z" fill="none" stroke="#212121"
+                        stroke-linecap="round" stroke-linejoin="round"></path>
+                </g>
+            </svg>
+            {% endif %}
+            {{ author.name }}
+        </small>
         {% endfor %}
 
+        {% endif %}
 
+        {% endwith %}
+        <footer>
+            {% blog_tags_page as tags_page %}
+
+            {% with tags=page.tags.all %}
+
+            {% if tags %}
+
+            <small>Tags:</small>
+
+            {% if tags_page %}
+            {% for tag in tags %}
+            <a href="{{ tags_page.url }}?tag={{ tag }}">{{ tag }}</a>
+            {% endfor %}
+
+            {% else %}
+
+            <p>Create a blog tags page</p>
+            {% endif %}
+
+            {% endif %}
+
+            {% endwith %}
+        </footer>
     </article>
+
+</div>
+
+<article>
+
+    <div>
+        {{ page.body|richtext }}
+    </div>
+
+    {% for item in page.gallery_images.all %}
+
+    {% if forloop.first or forloop.counter0|divisibleby:4 %}
+    {% comment %} Start a new row {% endcomment %}
+    <div class="grid">
+    {% endif %}
+
+        <figure>
+            {% image item.image fill-600x400 %}
+            <figcaption>
+                {{ item.caption }}
+            </figcaption>
+        </figure>
+
+    {% if forloop.last or forloop.counter|divisibleby:4 %}
+    {% comment %} End row {% endcomment %}
+    </div>
+
+    {% endif %}
+
+    {% endfor %}
+
+</article>
 
 
 {% endblock %}

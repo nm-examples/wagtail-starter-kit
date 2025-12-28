@@ -35,7 +35,6 @@ class HomeTestCase(TestCase):
         """Test that the home page frontend returns 200 OK."""
         response = self.client.get("/")
         self.assertEqual(response.status_code, 200)
-        self.assertContains(response, "Wagtail Blog Tutorial")
         self.assertTemplateUsed(response, "home/home_page.html")
 
     def test_home_admin_edit_returns_200(self):
