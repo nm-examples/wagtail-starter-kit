@@ -46,13 +46,15 @@ class FooterText(
     TranslatableMixin,
     models.Model,
 ):
-
     body = RichTextField()
 
     panels = [
         FieldPanel("body"),
         PublishingPanel(),
     ]
+
+    class Meta(TranslatableMixin.Meta):
+        verbose_name_plural = "Footer Text"
 
     def __str__(self):
         return "Footer text"
@@ -62,9 +64,6 @@ class FooterText(
 
     def get_preview_context(self, request, mode_name):
         return {"footer_text": self.body}
-
-    class Meta(TranslatableMixin.Meta):
-        verbose_name_plural = "Footer Text"
 
 
 class FormField(AbstractFormField):

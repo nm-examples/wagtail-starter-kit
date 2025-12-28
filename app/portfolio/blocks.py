@@ -31,6 +31,5 @@ class FeaturedPostsBlock(StructBlock):
 
 
 class PortfolioStreamBlock(BaseStreamBlock):
-
     card = CardBlock(group="Sections")
     featured_posts = FeaturedPostsBlock(group="Sections")
