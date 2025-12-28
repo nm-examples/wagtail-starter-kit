@@ -1,4 +1,4 @@
-{% load static wagtailcore_tags wagtailuserbar %}
+{% load static wagtailcore_tags wagtailuserbar blog_tags %}
 
 <!DOCTYPE html>
 <html lang="en">
@@ -34,7 +34,29 @@
     <body class="{% block body_class %}{% endblock %}">
         {% wagtailuserbar %}
 
-        {% block content %}{% endblock %}
+        {% blog_index_page as blog %}
+        <header class="container">
+            <nav>
+                <ul>
+                    <li>
+                        <a href="/"><h1>Wagtail Blog Tutorial</h1></a>
+                    </li>
+                </ul>
+                <li>
+                    <ul>
+                        <a href="{% if blog %}{{ blog.url }}{% else %}#{% endif %}" role="button">View Blog{% if not blog %}(Create a blog index page){% endif %}</a>
+                    </li>
+                </ul>
+            </nav>
+        </header>
+
+        <main class="container">
+            {% block content %}{% endblock %}
+        </main>
+
+        <footer class="container">
+            <p>Working example of the <a href="https://docs.wagtail.org/en/v6.2.2/getting_started/tutorial.html">Wagtail Getting Started Tutorial</a></p>
+        </footer>
 
         {# Global javascript #}
         <script type="text/javascript" src="{% static 'js/app.js' %}"></script>
